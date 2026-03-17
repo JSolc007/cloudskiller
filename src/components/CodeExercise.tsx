@@ -136,11 +136,11 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     if (task.type !== "select-option") return null;
 
     return (
-      <div className="mt-4 space-y-3">
+      <div className="mt-4 space-y-3 w-full">
         {task.blanks.map((blank) => {
           if (!blank.options) return null;
           return (
-            <div key={blank.id} className="flex flex-wrap gap-2">
+            <div key={blank.id} className="grid grid-cols-2 gap-2 w-full">
               {blank.options.map((option) => {
                 const isSelected = answers[blank.id] === option;
                 const isError = errors[blank.id] && isSelected;
@@ -150,7 +150,7 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
                     key={option}
                     onClick={() => handleOptionSelect(blank.id, option)}
                     disabled={validationState === "validating" || validationState === "success"}
-                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-iq border
+                    className={`w-full px-3 py-3 rounded-lg text-sm font-medium transition-iq border
                       ${isCorrect ? "bg-success/15 border-success text-success" : ""}
                       ${isError ? "bg-destructive/15 border-destructive text-destructive animate-shake" : ""}
                       ${isSelected && !isError && !isCorrect ? "bg-primary/15 border-primary text-primary" : ""}
