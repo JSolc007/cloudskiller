@@ -1,780 +1,509 @@
 import { Chapter } from "./types";
 
 export const awsChapters: Chapter[] = [
-  // === VPC & Networking ===
+  // ─── Landing Zone & Account Strategy ───
   {
-    id: "vpc-basics",
-    title: "VPC Basics",
-    description: "Provision your first Virtual Private Cloud on AWS.",
+    id: "aws-landing-zone",
+    title: "Landing Zone",
+    description: "AWS Organizations, Control Tower & multi-account strategy.",
+    icon: "🏗️",
+    category: "aws",
+    tasks: [
+      {
+        id: "lz-1", title: "AWS Organizations", description: "Which service manages multiple AWS accounts centrally?", type: "select-option",
+        codeTemplate: `The service for multi-account management is {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "AWS Organizations", options: ["AWS Organizations", "IAM", "CloudFormation", "Config"] }],
+      },
+      {
+        id: "lz-2", title: "SCPs", description: "What does SCP stand for?", type: "select-option",
+        codeTemplate: `SCP = {{BLANK_1}}`,
+        blanks: [{ id: "BLANK_1", answer: "Service Control Policy", options: ["Service Control Policy", "Security Config Protocol", "System Control Parameter", "Service Config Policy"] }],
+      },
+      {
+        id: "lz-3", title: "Control Tower", description: "Which service automates landing zone setup?", type: "select-option",
+        codeTemplate: `To set up a multi-account landing zone, use {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "AWS Control Tower", options: ["AWS Control Tower", "CloudFormation", "Service Catalog", "AWS Config"] }],
+      },
+      {
+        id: "lz-4", title: "Guardrails", description: "Control Tower guardrails are implemented using?", type: "select-option",
+        codeTemplate: `Preventive guardrails use {{BLANK_1}}, detective guardrails use AWS Config.`,
+        blanks: [{ id: "BLANK_1", answer: "SCPs", options: ["SCPs", "IAM Policies", "NACLs", "WAF Rules"] }],
+      },
+      {
+        id: "lz-5", title: "OU Structure", description: "Fill in the common OU names.", type: "fill-blank",
+        codeTemplate: `Organizational Units:
+  - {{BLANK_1}}    # shared logging & audit
+  - Production
+  - {{BLANK_2}}    # non-prod workloads
+  - Sandbox`,
+        blanks: [
+          { id: "BLANK_1", answer: "Security", hint: "OU for security/audit accounts" },
+          { id: "BLANK_2", answer: "Development", hint: "OU for dev/staging" },
+        ],
+      },
+    ],
+  },
+
+  // ─── VPC & Networking ───
+  {
+    id: "aws-networking",
+    title: "VPC & Networking",
+    description: "VPC design, subnets, routing, peering, Transit Gateway.",
     icon: "🌐",
     category: "aws",
     tasks: [
       {
-        id: "vpc-1",
-        title: "Create a VPC",
-        description: "Declare a VPC resource with a CIDR block.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_vpc" "main" {
+        id: "net-1", title: "VPC CIDR", description: "What CIDR gives you 65,536 IPs?", type: "select-option",
+        codeTemplate: `VPC CIDR: {{BLANK_1}}`,
+        blanks: [{ id: "BLANK_1", answer: "10.0.0.0/16", options: ["10.0.0.0/16", "10.0.0.0/24", "10.0.0.0/8", "10.0.0.0/20"] }],
+      },
+      {
+        id: "net-2", title: "Public vs Private", description: "What makes a subnet public?", type: "select-option",
+        codeTemplate: `A subnet is public when it has a route to an {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Internet Gateway", options: ["Internet Gateway", "NAT Gateway", "VPN Gateway", "Transit Gateway"] }],
+      },
+      {
+        id: "net-3", title: "NAT Gateway", description: "NAT Gateway allows private subnets to…", type: "select-option",
+        codeTemplate: `NAT Gateway enables {{BLANK_1}} internet access for private subnets.`,
+        blanks: [{ id: "BLANK_1", answer: "outbound", options: ["outbound", "inbound", "bidirectional", "none"] }],
+      },
+      {
+        id: "net-4", title: "Security Group vs NACL", description: "Security Groups are…", type: "select-option",
+        codeTemplate: `Security Groups are {{BLANK_1}}, NACLs are stateless.`,
+        blanks: [{ id: "BLANK_1", answer: "stateful", options: ["stateful", "stateless", "regional", "global"] }],
+      },
+      {
+        id: "net-5", title: "Transit Gateway", description: "Which service connects multiple VPCs in a hub-spoke model?", type: "select-option",
+        codeTemplate: `For hub-and-spoke multi-VPC connectivity, use {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Transit Gateway", options: ["Transit Gateway", "VPC Peering", "Direct Connect", "Site-to-Site VPN"] }],
+      },
+      {
+        id: "net-6", title: "VPC Peering", description: "VPC Peering is NOT…", type: "select-option",
+        codeTemplate: `VPC Peering does NOT support {{BLANK_1}} routing.`,
+        blanks: [{ id: "BLANK_1", answer: "transitive", options: ["transitive", "encrypted", "cross-region", "cross-account"] }],
+      },
+      {
+        id: "net-7", title: "Route Table", description: "Fill in the default route.", type: "fill-blank",
+        codeTemplate: `route {
   cidr_block = "{{BLANK_1}}"
-
-  tags = {
-    Name = "{{BLANK_2}}"
-  }
+  gateway_id = aws_internet_gateway.main.id
 }`,
-        blanks: [
-          { id: "BLANK_1", answer: "10.0.0.0/16", hint: "A common private CIDR range" },
-          { id: "BLANK_2", answer: "main-vpc", hint: "Name tag for the VPC" },
-        ],
+        blanks: [{ id: "BLANK_1", answer: "0.0.0.0/0", hint: "Default route CIDR" }],
       },
       {
-        id: "vpc-2",
-        title: "Create a Subnet",
-        description: "Add a public subnet to your VPC.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_subnet" "public" {
-  vpc_id     = aws_vpc.main.{{BLANK_1}}
-  cidr_block = "{{BLANK_2}}"
-
-  map_public_ip_on_launch = {{BLANK_3}}
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "id", hint: "Reference the VPC's identifier" },
-          { id: "BLANK_2", answer: "10.0.1.0/24", hint: "A /24 subnet within the VPC" },
-          { id: "BLANK_3", answer: "true", hint: "Boolean to auto-assign public IPs" },
-        ],
+        id: "net-8", title: "VPC Endpoints", description: "A Gateway endpoint supports which two services?", type: "select-option",
+        codeTemplate: `Gateway VPC Endpoints support {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "S3 and DynamoDB", options: ["S3 and DynamoDB", "S3 and SQS", "EC2 and RDS", "Lambda and SNS"] }],
       },
       {
-        id: "vpc-3",
-        title: "Internet Gateway",
-        description: "Attach an Internet Gateway to allow outbound traffic.",
-        type: "fill-blank",
-        codeTemplate: `resource "{{BLANK_1}}" "igw" {
-  vpc_id = aws_vpc.main.id
-
-  tags = {
-    Name = "main-igw"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "aws_internet_gateway", hint: "AWS resource type for internet gateways" },
-        ],
-      },
-      {
-        id: "vpc-4",
-        title: "NAT Gateway",
-        description: "Create a NAT Gateway for private subnet internet access.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_eip" "nat" {
-  domain = "{{BLANK_1}}"
-}
-
-resource "aws_nat_gateway" "main" {
-  allocation_id = aws_eip.nat.{{BLANK_2}}
-  subnet_id     = aws_subnet.{{BLANK_3}}.id
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "vpc", hint: "EIP domain for VPC usage" },
-          { id: "BLANK_2", answer: "id", hint: "Reference the EIP" },
-          { id: "BLANK_3", answer: "public", hint: "NAT GW must be in a public subnet" },
-        ],
-      },
-      {
-        id: "vpc-5",
-        title: "Route Table",
-        description: "Create a route table with a default route to the IGW.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_route_table" "public" {
-  vpc_id = aws_vpc.main.id
-
-  route {
-    cidr_block = "{{BLANK_1}}"
-    gateway_id = aws_internet_gateway.igw.{{BLANK_2}}
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "0.0.0.0/0", hint: "Default route CIDR" },
-          { id: "BLANK_2", answer: "id", hint: "Reference the gateway" },
-        ],
+        id: "net-9", title: "Flow Logs", description: "Where can VPC Flow Logs be published?", type: "select-option",
+        codeTemplate: `VPC Flow Logs can go to CloudWatch Logs or {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "S3", options: ["S3", "DynamoDB", "EFS", "Glacier"] }],
       },
     ],
   },
 
-  // === S3 Storage ===
+  // ─── EC2 & Compute ───
   {
-    id: "s3-storage",
-    title: "S3 Storage",
-    description: "Master S3 bucket creation, policies, and versioning.",
-    icon: "🪣",
-    category: "aws",
-    tasks: [
-      {
-        id: "s3-1",
-        title: "Create an S3 Bucket",
-        description: "Declare an S3 bucket with tags.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_s3_bucket" "data" {
-  bucket = "{{BLANK_1}}"
-
-  tags = {
-    Environment = "{{BLANK_2}}"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "my-app-data-bucket", hint: "Globally unique bucket name" },
-          { id: "BLANK_2", answer: "production", hint: "Environment tag value" },
-        ],
-      },
-      {
-        id: "s3-2",
-        title: "Enable Versioning",
-        description: "Turn on versioning for your S3 bucket.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_s3_bucket_versioning" "data" {
-  bucket = aws_s3_bucket.data.{{BLANK_1}}
-
-  versioning_configuration {
-    status = "{{BLANK_2}}"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "id", hint: "Reference the bucket" },
-          { id: "BLANK_2", answer: "Enabled", hint: "Versioning status value" },
-        ],
-      },
-      {
-        id: "s3-3",
-        title: "Server-Side Encryption",
-        description: "Enable default encryption on your bucket.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_s3_bucket_server_side_encryption_configuration" "data" {
-  bucket = aws_s3_bucket.data.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "{{BLANK_1}}"
-    }
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "aws:kms", hint: "KMS-based encryption algorithm" },
-        ],
-      },
-      {
-        id: "s3-4",
-        title: "Bucket Policy",
-        description: "Allow CloudFront to read from S3 via OAC.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_s3_bucket_policy" "cdn" {
-  bucket = aws_s3_bucket.data.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect    = "{{BLANK_1}}"
-      Principal = { Service = "cloudfront.amazonaws.com" }
-      Action    = "s3:{{BLANK_2}}"
-      Resource  = "\${aws_s3_bucket.data.arn}/*"
-    }]
-  })
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "Allow", hint: "IAM effect to grant access" },
-          { id: "BLANK_2", answer: "GetObject", hint: "S3 action to read objects" },
-        ],
-      },
-      {
-        id: "s3-5",
-        title: "Lifecycle Rules",
-        description: "Move old objects to Glacier after 90 days.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_s3_bucket_lifecycle_configuration" "data" {
-  bucket = aws_s3_bucket.data.id
-
-  rule {
-    id     = "archive"
-    status = "Enabled"
-
-    transition {
-      days          = {{BLANK_1}}
-      storage_class = "{{BLANK_2}}"
-    }
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "90", hint: "Days before transition" },
-          { id: "BLANK_2", answer: "GLACIER", hint: "Cold storage class" },
-        ],
-      },
-    ],
-  },
-
-  // === IAM & Roles ===
-  {
-    id: "iam-roles",
-    title: "IAM & Roles",
-    description: "Configure identity, access management and assume role policies.",
-    icon: "🔐",
-    category: "aws",
-    tasks: [
-      {
-        id: "iam-1",
-        title: "Create an IAM Role",
-        description: "Define an IAM role with an assume role policy.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_iam_role" "lambda_exec" {
-  name = "{{BLANK_1}}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Action    = "{{BLANK_2}}"
-      Effect    = "Allow"
-      Principal = { Service = "lambda.amazonaws.com" }
-    }]
-  })
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "lambda-exec-role", hint: "Name for the IAM role" },
-          { id: "BLANK_2", answer: "sts:AssumeRole", hint: "The STS action for assuming roles" },
-        ],
-      },
-      {
-        id: "iam-2",
-        title: "IAM Policy Document",
-        description: "Create a policy allowing DynamoDB access.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_iam_policy" "dynamodb_access" {
-  name = "dynamodb-access"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect   = "Allow"
-      Action   = [
-        "dynamodb:{{BLANK_1}}",
-        "dynamodb:{{BLANK_2}}",
-        "dynamodb:Scan"
-      ]
-      Resource = "{{BLANK_3}}"
-    }]
-  })
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "GetItem", hint: "Read a single item" },
-          { id: "BLANK_2", answer: "PutItem", hint: "Write a single item" },
-          { id: "BLANK_3", answer: "*", hint: "Resource ARN (all for simplicity)" },
-        ],
-      },
-      {
-        id: "iam-3",
-        title: "Attach Policy to Role",
-        description: "Attach a managed policy to an IAM role.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_iam_role_policy_attachment" "lambda_dynamodb" {
-  role       = aws_iam_role.lambda_exec.{{BLANK_1}}
-  policy_arn = aws_iam_policy.dynamodb_access.{{BLANK_2}}
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "name", hint: "Reference the role's name" },
-          { id: "BLANK_2", answer: "arn", hint: "Reference the policy's ARN" },
-        ],
-      },
-    ],
-  },
-
-  // === EC2 Instances ===
-  {
-    id: "ec2-instances",
-    title: "EC2 Instances",
-    description: "Launch and configure EC2 instances with security groups.",
+    id: "aws-ec2",
+    title: "EC2 & Compute",
+    description: "Instance types, AMIs, placement groups, pricing.",
     icon: "🖥️",
     category: "aws",
     tasks: [
       {
-        id: "ec2-1",
-        title: "Launch an Instance",
-        description: "Create an EC2 instance with a specific AMI.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_instance" "web" {
-  ami           = "{{BLANK_1}}"
-  instance_type = "{{BLANK_2}}"
-  subnet_id     = aws_subnet.public.id
-
-  tags = {
-    Name = "web-server"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "ami-0c55b159cbfafe1f0", hint: "Amazon Linux 2 AMI ID" },
-          { id: "BLANK_2", answer: "t3.micro", hint: "Small, burstable instance type" },
-        ],
+        id: "ec2-1", title: "Instance Families", description: "Which family is general purpose?", type: "select-option",
+        codeTemplate: `General purpose instances: {{BLANK_1}} family.`,
+        blanks: [{ id: "BLANK_1", answer: "t3/m5", options: ["t3/m5", "c5", "r5", "p3"] }],
       },
       {
-        id: "ec2-2",
-        title: "Security Group",
-        description: "Create a security group allowing HTTP and SSH.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_security_group" "web" {
-  vpc_id = aws_vpc.main.id
-
-  ingress {
-    from_port   = {{BLANK_1}}
-    to_port     = {{BLANK_1}}
-    protocol    = "{{BLANK_2}}"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = {{BLANK_3}}
-    to_port     = {{BLANK_3}}
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "80", hint: "HTTP port" },
-          { id: "BLANK_2", answer: "tcp", hint: "Transport protocol" },
-          { id: "BLANK_3", answer: "22", hint: "SSH port" },
-        ],
+        id: "ec2-2", title: "Spot Instances", description: "Spot instances can save up to…", type: "select-option",
+        codeTemplate: `Spot instances offer up to {{BLANK_1}}% discount vs On-Demand.`,
+        blanks: [{ id: "BLANK_1", answer: "90", options: ["90", "50", "30", "75"] }],
       },
       {
-        id: "ec2-3",
-        title: "Key Pair",
-        description: "Create a key pair for SSH access.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_key_pair" "deployer" {
-  key_name   = "{{BLANK_1}}"
-  public_key = {{BLANK_2}}("~/.ssh/id_rsa.pub")
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "deployer-key", hint: "Name for the key pair" },
-          { id: "BLANK_2", answer: "file", hint: "Terraform function to read a file" },
-        ],
+        id: "ec2-3", title: "Placement Groups", description: "Which placement group is for low latency?", type: "select-option",
+        codeTemplate: `For lowest network latency, use a {{BLANK_1}} placement group.`,
+        blanks: [{ id: "BLANK_1", answer: "cluster", options: ["cluster", "spread", "partition", "dedicated"] }],
       },
       {
-        id: "ec2-4",
-        title: "User Data Script",
-        description: "Bootstrap an EC2 instance with a startup script.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_instance" "web" {
-  ami           = var.ami_id
-  instance_type = "t3.micro"
-
-  user_data = <<-{{BLANK_1}}
-    #!/bin/bash
-    yum update -y
-    yum install -y {{BLANK_2}}
-    systemctl start httpd
-    systemctl enable httpd
-  {{BLANK_1}}
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "EOF", hint: "Heredoc delimiter" },
-          { id: "BLANK_2", answer: "httpd", hint: "Apache web server package" },
-        ],
+        id: "ec2-4", title: "User Data", description: "EC2 User Data runs at…", type: "select-option",
+        codeTemplate: `EC2 User Data scripts run at {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "first boot", options: ["first boot", "every boot", "shutdown", "manually"] }],
+      },
+      {
+        id: "ec2-5", title: "Instance Metadata", description: "What URL is instance metadata?", type: "fill-blank",
+        codeTemplate: `curl http://{{BLANK_1}}/latest/meta-data/`,
+        blanks: [{ id: "BLANK_1", answer: "169.254.169.254", hint: "Link-local metadata IP" }],
+      },
+      {
+        id: "ec2-6", title: "AMI Scope", description: "AMIs are scoped to a…", type: "select-option",
+        codeTemplate: `AMIs are {{BLANK_1}} scoped.`,
+        blanks: [{ id: "BLANK_1", answer: "region", options: ["region", "AZ", "global", "account"] }],
+      },
+      {
+        id: "ec2-7", title: "Reserved Instances", description: "Max RI term length?", type: "select-option",
+        codeTemplate: `Reserved Instances can be purchased for up to {{BLANK_1}} years.`,
+        blanks: [{ id: "BLANK_1", answer: "3", options: ["3", "1", "5", "2"] }],
       },
     ],
   },
 
-  // === Lambda Functions ===
+  // ─── ECS & Containers ───
   {
-    id: "lambda-functions",
-    title: "Lambda Functions",
-    description: "Deploy serverless functions with triggers and permissions.",
-    icon: "⚡",
+    id: "aws-ecs",
+    title: "ECS & Containers",
+    description: "ECS tasks, services, Fargate, ECR.",
+    icon: "🐳",
     category: "aws",
     tasks: [
       {
-        id: "lambda-1",
-        title: "Create a Lambda Function",
-        description: "Define a Lambda function from a ZIP archive.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lambda_function" "api" {
-  filename      = "lambda.zip"
-  function_name = "{{BLANK_1}}"
-  role          = aws_iam_role.lambda_exec.{{BLANK_2}}
-  handler       = "{{BLANK_3}}"
-  runtime       = "nodejs18.x"
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "api-handler", hint: "Name for the function" },
-          { id: "BLANK_2", answer: "arn", hint: "Reference the role's ARN" },
-          { id: "BLANK_3", answer: "index.handler", hint: "file.exportedFunction format" },
-        ],
+        id: "ecs-1", title: "ECS Launch Types", description: "Which launch type is serverless?", type: "select-option",
+        codeTemplate: `The serverless ECS launch type is {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Fargate", options: ["Fargate", "EC2", "Lambda", "EKS"] }],
       },
       {
-        id: "lambda-2",
-        title: "API Gateway Trigger",
-        description: "Allow API Gateway to invoke your Lambda.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lambda_permission" "apigw" {
-  statement_id  = "AllowAPIGatewayInvoke"
-  action        = "lambda:{{BLANK_1}}"
-  function_name = aws_lambda_function.api.function_name
-  principal     = "{{BLANK_2}}"
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "InvokeFunction", hint: "Lambda action to allow invocation" },
-          { id: "BLANK_2", answer: "apigateway.amazonaws.com", hint: "API Gateway service principal" },
-        ],
+        id: "ecs-2", title: "Task Definition", description: "A Task Definition is like a…", type: "select-option",
+        codeTemplate: `A Task Definition is a {{BLANK_1}} for containers.`,
+        blanks: [{ id: "BLANK_1", answer: "blueprint", options: ["blueprint", "runtime", "cluster", "service"] }],
       },
       {
-        id: "lambda-3",
-        title: "Environment Variables",
-        description: "Pass configuration to your Lambda via env vars.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lambda_function" "api" {
-  function_name = "api-handler"
-  runtime       = "nodejs18.x"
-  handler       = "index.handler"
-  role          = aws_iam_role.lambda_exec.arn
-
-  environment {
-    {{BLANK_1}} = {
-      TABLE_NAME = aws_dynamodb_table.main.{{BLANK_2}}
-      STAGE      = "{{BLANK_3}}"
-    }
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "variables", hint: "Key for env var map in Lambda" },
-          { id: "BLANK_2", answer: "name", hint: "Reference the DynamoDB table name" },
-          { id: "BLANK_3", answer: "production", hint: "Deployment stage" },
-        ],
+        id: "ecs-3", title: "ECR", description: "Where do you store Docker images in AWS?", type: "select-option",
+        codeTemplate: `AWS container image registry: {{BLANK_1}}`,
+        blanks: [{ id: "BLANK_1", answer: "ECR", options: ["ECR", "ECS", "S3", "CodeArtifact"] }],
+      },
+      {
+        id: "ecs-4", title: "Service vs Task", description: "An ECS Service maintains…", type: "select-option",
+        codeTemplate: `An ECS Service maintains a {{BLANK_1}} of running tasks.`,
+        blanks: [{ id: "BLANK_1", answer: "desired count", options: ["desired count", "single instance", "maximum limit", "minimum threshold"] }],
+      },
+      {
+        id: "ecs-5", title: "Task Role", description: "Which role do containers use to call AWS APIs?", type: "select-option",
+        codeTemplate: `Containers use the {{BLANK_1}} to access AWS services.`,
+        blanks: [{ id: "BLANK_1", answer: "Task Role", options: ["Task Role", "Execution Role", "Service Role", "Instance Profile"] }],
+      },
+      {
+        id: "ecs-6", title: "Execution Role", description: "The Execution Role is used to…", type: "select-option",
+        codeTemplate: `The ECS Execution Role is used to {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "pull images and write logs", options: ["pull images and write logs", "call application APIs", "manage load balancers", "scale services"] }],
       },
     ],
   },
 
-  // === DynamoDB ===
+  // ─── S3 Deep Dive ───
   {
-    id: "dynamodb",
-    title: "DynamoDB",
-    description: "Create DynamoDB tables with keys and indexes.",
-    icon: "🗄️",
+    id: "aws-s3",
+    title: "S3 Deep Dive",
+    description: "Storage classes, lifecycle, encryption, replication.",
+    icon: "🪣",
     category: "aws",
     tasks: [
       {
-        id: "dynamo-1",
-        title: "Create a Table",
-        description: "Define a DynamoDB table with a hash key.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_dynamodb_table" "users" {
-  name         = "users"
-  billing_mode = "{{BLANK_1}}"
-  hash_key     = "{{BLANK_2}}"
-
-  attribute {
-    name = "userId"
-    type = "{{BLANK_3}}"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "PAY_PER_REQUEST", hint: "On-demand billing mode" },
-          { id: "BLANK_2", answer: "userId", hint: "Primary key attribute" },
-          { id: "BLANK_3", answer: "S", hint: "String type in DynamoDB" },
-        ],
+        id: "s3-1", title: "Storage Classes", description: "Cheapest storage for rarely accessed archives?", type: "select-option",
+        codeTemplate: `For long-term archival with hours retrieval: {{BLANK_1}}`,
+        blanks: [{ id: "BLANK_1", answer: "S3 Glacier Deep Archive", options: ["S3 Glacier Deep Archive", "S3 Standard-IA", "S3 One Zone-IA", "S3 Intelligent-Tiering"] }],
       },
       {
-        id: "dynamo-2",
-        title: "Global Secondary Index",
-        description: "Add a GSI for querying by email.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_dynamodb_table" "users" {
-  name     = "users"
-  hash_key = "userId"
-
-  attribute {
-    name = "email"
-    type = "S"
-  }
-
-  global_secondary_index {
-    name            = "{{BLANK_1}}"
-    hash_key        = "email"
-    projection_type = "{{BLANK_2}}"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "email-index", hint: "Name for the GSI" },
-          { id: "BLANK_2", answer: "ALL", hint: "Project all attributes" },
-        ],
+        id: "s3-2", title: "Versioning", description: "Versioning can be…", type: "select-option",
+        codeTemplate: `Once enabled, versioning can be {{BLANK_1}} but not disabled.`,
+        blanks: [{ id: "BLANK_1", answer: "suspended", options: ["suspended", "disabled", "deleted", "paused"] }],
+      },
+      {
+        id: "s3-3", title: "Encryption", description: "Default S3 encryption since Jan 2023?", type: "select-option",
+        codeTemplate: `S3 now encrypts all objects by default with {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "SSE-S3", options: ["SSE-S3", "SSE-KMS", "SSE-C", "None"] }],
+      },
+      {
+        id: "s3-4", title: "Cross-Region Replication", description: "CRR requires…", type: "select-option",
+        codeTemplate: `Cross-Region Replication requires {{BLANK_1}} enabled on both buckets.`,
+        blanks: [{ id: "BLANK_1", answer: "versioning", options: ["versioning", "encryption", "logging", "lifecycle"] }],
+      },
+      {
+        id: "s3-5", title: "Pre-signed URLs", description: "Pre-signed URLs grant…", type: "select-option",
+        codeTemplate: `Pre-signed URLs grant {{BLANK_1}} access to private objects.`,
+        blanks: [{ id: "BLANK_1", answer: "temporary", options: ["temporary", "permanent", "public", "encrypted"] }],
+      },
+      {
+        id: "s3-6", title: "Transfer Acceleration", description: "S3 Transfer Acceleration uses…", type: "select-option",
+        codeTemplate: `Transfer Acceleration uses {{BLANK_1}} edge locations.`,
+        blanks: [{ id: "BLANK_1", answer: "CloudFront", options: ["CloudFront", "Global Accelerator", "Route 53", "Direct Connect"] }],
+      },
+      {
+        id: "s3-7", title: "Object Lock", description: "Object Lock enforces…", type: "select-option",
+        codeTemplate: `S3 Object Lock enforces {{BLANK_1}} (Write Once Read Many).`,
+        blanks: [{ id: "BLANK_1", answer: "WORM", options: ["WORM", "FIFO", "LIFO", "ACID"] }],
       },
     ],
   },
 
-  // === CloudFront ===
+  // ─── EFS & Storage ───
   {
-    id: "cloudfront",
-    title: "CloudFront CDN",
-    description: "Set up CloudFront distributions for content delivery.",
-    icon: "🚀",
+    id: "aws-efs",
+    title: "EFS & Storage",
+    description: "EFS, EBS, FSx — shared and block storage.",
+    icon: "📁",
     category: "aws",
     tasks: [
       {
-        id: "cf-1",
-        title: "CloudFront Distribution",
-        description: "Create a CloudFront distribution for an S3 origin.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_cloudfront_distribution" "cdn" {
-  enabled             = true
-  default_root_object = "{{BLANK_1}}"
-
-  origin {
-    domain_name = aws_s3_bucket.web.{{BLANK_2}}
-    origin_id   = "s3-origin"
-  }
-
-  default_cache_behavior {
-    allowed_methods        = ["GET", "HEAD"]
-    cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "s3-origin"
-    viewer_protocol_policy = "{{BLANK_3}}"
-  }
-
-  restrictions {
-    geo_restriction { restriction_type = "none" }
-  }
-
-  viewer_certificate {
-    cloudfront_default_certificate = true
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "index.html", hint: "Default page to serve" },
-          { id: "BLANK_2", answer: "bucket_regional_domain_name", hint: "S3 regional endpoint" },
-          { id: "BLANK_3", answer: "redirect-to-https", hint: "Force HTTPS" },
-        ],
+        id: "efs-1", title: "EFS Protocol", description: "EFS uses which protocol?", type: "select-option",
+        codeTemplate: `EFS uses the {{BLANK_1}} protocol.`,
+        blanks: [{ id: "BLANK_1", answer: "NFS", options: ["NFS", "SMB", "iSCSI", "FTP"] }],
+      },
+      {
+        id: "efs-2", title: "EFS vs EBS", description: "EFS can be mounted by…", type: "select-option",
+        codeTemplate: `EFS can be mounted by {{BLANK_1}} EC2 instances simultaneously.`,
+        blanks: [{ id: "BLANK_1", answer: "multiple", options: ["multiple", "one", "two", "three"] }],
+      },
+      {
+        id: "efs-3", title: "EBS Types", description: "Which EBS type is best for databases?", type: "select-option",
+        codeTemplate: `For high-performance databases, use {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "io2 Block Express", options: ["io2 Block Express", "gp3", "st1", "sc1"] }],
+      },
+      {
+        id: "efs-4", title: "EBS Multi-Attach", description: "Multi-Attach is available on which EBS type?", type: "select-option",
+        codeTemplate: `EBS Multi-Attach works with {{BLANK_1}} volumes.`,
+        blanks: [{ id: "BLANK_1", answer: "io1/io2", options: ["io1/io2", "gp2/gp3", "st1", "sc1"] }],
+      },
+      {
+        id: "efs-5", title: "FSx", description: "FSx for Windows uses which protocol?", type: "select-option",
+        codeTemplate: `FSx for Windows File Server uses {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "SMB", options: ["SMB", "NFS", "iSCSI", "CIFS"] }],
       },
     ],
   },
 
-  // === RDS ===
+  // ─── RDS & Databases ───
   {
-    id: "rds-databases",
-    title: "RDS Databases",
-    description: "Provision managed relational databases on AWS.",
+    id: "aws-rds",
+    title: "RDS & Databases",
+    description: "RDS, Aurora, DynamoDB, ElastiCache.",
     icon: "🐘",
     category: "aws",
     tasks: [
       {
-        id: "rds-1",
-        title: "Create RDS Instance",
-        description: "Launch a PostgreSQL RDS instance.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_db_instance" "main" {
-  allocated_storage    = 20
-  engine               = "{{BLANK_1}}"
-  engine_version       = "15.4"
-  instance_class       = "{{BLANK_2}}"
-  db_name              = "appdb"
-  username             = "admin"
-  password             = var.db_password
-  skip_final_snapshot  = {{BLANK_3}}
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "postgres", hint: "PostgreSQL engine name" },
-          { id: "BLANK_2", answer: "db.t3.micro", hint: "Small RDS instance class" },
-          { id: "BLANK_3", answer: "true", hint: "Skip snapshot on delete (dev)" },
-        ],
+        id: "rds-1", title: "Aurora", description: "Aurora storage auto-scales up to…", type: "select-option",
+        codeTemplate: `Aurora storage grows automatically up to {{BLANK_1}} TB.`,
+        blanks: [{ id: "BLANK_1", answer: "128", options: ["128", "64", "256", "32"] }],
       },
       {
-        id: "rds-2",
-        title: "DB Subnet Group",
-        description: "Create a subnet group for multi-AZ RDS.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_db_subnet_group" "main" {
-  name       = "main-db-subnet"
-  subnet_ids = [
-    aws_subnet.private_a.{{BLANK_1}},
-    aws_subnet.private_b.{{BLANK_1}}
-  ]
-
-  tags = {
-    Name = "{{BLANK_2}}"
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "id", hint: "Reference subnet IDs" },
-          { id: "BLANK_2", answer: "main-db-subnet", hint: "Name tag for the subnet group" },
-        ],
+        id: "rds-2", title: "Read Replicas", description: "RDS supports up to how many read replicas?", type: "select-option",
+        codeTemplate: `RDS supports up to {{BLANK_1}} read replicas.`,
+        blanks: [{ id: "BLANK_1", answer: "5", options: ["5", "3", "10", "15"] }],
+      },
+      {
+        id: "rds-3", title: "Multi-AZ", description: "Multi-AZ provides…", type: "select-option",
+        codeTemplate: `Multi-AZ deployment provides {{BLANK_1}}, NOT read scaling.`,
+        blanks: [{ id: "BLANK_1", answer: "high availability", options: ["high availability", "read performance", "cost savings", "cross-region access"] }],
+      },
+      {
+        id: "rds-4", title: "Aurora Serverless", description: "Aurora Serverless scales in…", type: "select-option",
+        codeTemplate: `Aurora Serverless scales in {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "ACUs (Aurora Capacity Units)", options: ["ACUs (Aurora Capacity Units)", "vCPUs", "Memory GB", "IOPS"] }],
+      },
+      {
+        id: "rds-5", title: "DynamoDB", description: "DynamoDB is a…", type: "select-option",
+        codeTemplate: `DynamoDB is a {{BLANK_1}} database.`,
+        blanks: [{ id: "BLANK_1", answer: "key-value and document", options: ["key-value and document", "relational", "graph", "time-series"] }],
+      },
+      {
+        id: "rds-6", title: "DAX", description: "DynamoDB Accelerator (DAX) provides…", type: "select-option",
+        codeTemplate: `DAX provides {{BLANK_1}} caching for DynamoDB.`,
+        blanks: [{ id: "BLANK_1", answer: "in-memory", options: ["in-memory", "disk-based", "distributed", "edge"] }],
+      },
+      {
+        id: "rds-7", title: "ElastiCache", description: "Which ElastiCache engine supports replication?", type: "select-option",
+        codeTemplate: `For replication and persistence, use ElastiCache for {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Redis", options: ["Redis", "Memcached", "Both", "Neither"] }],
       },
     ],
   },
 
-  // === ELB / ALB ===
+  // ─── IAM & Security ───
   {
-    id: "load-balancers",
-    title: "Load Balancers",
-    description: "Configure Application Load Balancers with target groups.",
-    icon: "⚖️",
+    id: "aws-iam",
+    title: "IAM & Security",
+    description: "IAM policies, roles, federation, KMS, Secrets Manager.",
+    icon: "🔐",
     category: "aws",
     tasks: [
       {
-        id: "alb-1",
-        title: "Application Load Balancer",
-        description: "Create an ALB with subnets.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lb" "main" {
-  name               = "main-alb"
-  internal           = {{BLANK_1}}
-  load_balancer_type = "{{BLANK_2}}"
-  security_groups    = [aws_security_group.alb.id]
-  subnets            = [aws_subnet.public_a.id, aws_subnet.public_b.id]
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "false", hint: "Internet-facing ALB" },
-          { id: "BLANK_2", answer: "application", hint: "Layer 7 load balancer type" },
-        ],
+        id: "iam-1", title: "Policy Evaluation", description: "Explicit Deny always…", type: "select-option",
+        codeTemplate: `In IAM, an explicit Deny always {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "wins over Allow", options: ["wins over Allow", "is ignored", "requires MFA", "logs an event"] }],
       },
       {
-        id: "alb-2",
-        title: "Target Group",
-        description: "Create a target group with health checks.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lb_target_group" "app" {
-  name     = "app-tg"
-  port     = {{BLANK_1}}
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.main.id
-
-  health_check {
-    path                = "{{BLANK_2}}"
-    healthy_threshold   = 3
-    unhealthy_threshold = 3
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "80", hint: "HTTP port" },
-          { id: "BLANK_2", answer: "/health", hint: "Health check endpoint path" },
-        ],
+        id: "iam-2", title: "AssumeRole", description: "To switch roles, you call…", type: "fill-blank",
+        codeTemplate: `aws sts {{BLANK_1}} --role-arn arn:aws:iam::123:role/Admin`,
+        blanks: [{ id: "BLANK_1", answer: "assume-role", hint: "STS API to assume a role" }],
       },
       {
-        id: "alb-3",
-        title: "Listener Rule",
-        description: "Create an HTTPS listener on the ALB.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_lb_listener" "https" {
-  load_balancer_arn = aws_lb.main.{{BLANK_1}}
-  port              = {{BLANK_2}}
-  protocol          = "HTTPS"
-  certificate_arn   = var.cert_arn
-
-  default_action {
-    type             = "{{BLANK_3}}"
-    target_group_arn = aws_lb_target_group.app.arn
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "arn", hint: "Reference the ALB" },
-          { id: "BLANK_2", answer: "443", hint: "HTTPS port" },
-          { id: "BLANK_3", answer: "forward", hint: "Action to route to target group" },
-        ],
+        id: "iam-3", title: "Instance Profile", description: "EC2 gets IAM credentials via…", type: "select-option",
+        codeTemplate: `EC2 instances receive IAM credentials through an {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Instance Profile", options: ["Instance Profile", "Access Key", "User Data", "Security Group"] }],
+      },
+      {
+        id: "iam-4", title: "KMS", description: "KMS manages…", type: "select-option",
+        codeTemplate: `AWS KMS manages {{BLANK_1}} for encryption.`,
+        blanks: [{ id: "BLANK_1", answer: "encryption keys", options: ["encryption keys", "SSL certificates", "SSH keys", "API keys"] }],
+      },
+      {
+        id: "iam-5", title: "Secrets Manager", description: "Secrets Manager can auto-rotate secrets for…", type: "select-option",
+        codeTemplate: `Secrets Manager natively auto-rotates credentials for {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "RDS", options: ["RDS", "S3", "EC2", "Lambda"] }],
+      },
+      {
+        id: "iam-6", title: "Permission Boundary", description: "Permission boundaries limit…", type: "select-option",
+        codeTemplate: `Permission boundaries set the {{BLANK_1}} permissions an entity can have.`,
+        blanks: [{ id: "BLANK_1", answer: "maximum", options: ["maximum", "minimum", "default", "temporary"] }],
       },
     ],
   },
 
-  // === SNS & SQS ===
+  // ─── High Availability ───
   {
-    id: "sns-sqs",
-    title: "SNS & SQS",
-    description: "Build event-driven architectures with messaging services.",
-    icon: "📨",
+    id: "aws-ha",
+    title: "High Availability",
+    description: "ALB, ASG, Route 53, CloudFront, Global Accelerator.",
+    icon: "⚡",
     category: "aws",
     tasks: [
       {
-        id: "sqs-1",
-        title: "Create SQS Queue",
-        description: "Define a standard SQS queue.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_sqs_queue" "orders" {
-  name                       = "{{BLANK_1}}"
-  visibility_timeout_seconds = {{BLANK_2}}
-  message_retention_seconds  = 86400
-
-  redrive_policy = jsonencode({
-    deadLetterTargetArn = aws_sqs_queue.orders_dlq.arn
-    maxReceiveCount     = {{BLANK_3}}
-  })
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "orders-queue", hint: "Queue name" },
-          { id: "BLANK_2", answer: "30", hint: "Seconds before message reappears" },
-          { id: "BLANK_3", answer: "5", hint: "Max retries before DLQ" },
-        ],
+        id: "ha-1", title: "ALB vs NLB", description: "ALB operates at which layer?", type: "select-option",
+        codeTemplate: `Application Load Balancer operates at Layer {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "7", options: ["7", "4", "3", "5"] }],
       },
       {
-        id: "sns-1",
-        title: "Create SNS Topic",
-        description: "Create an SNS topic and subscribe an SQS queue.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_sns_topic" "notifications" {
-  name = "{{BLANK_1}}"
-}
-
-resource "aws_sns_topic_subscription" "sqs" {
-  topic_arn = aws_sns_topic.notifications.{{BLANK_2}}
-  protocol  = "{{BLANK_3}}"
-  endpoint  = aws_sqs_queue.orders.arn
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "order-notifications", hint: "Topic name" },
-          { id: "BLANK_2", answer: "arn", hint: "Reference the topic" },
-          { id: "BLANK_3", answer: "sqs", hint: "Protocol for SQS subscription" },
-        ],
+        id: "ha-2", title: "ASG Policies", description: "Target tracking policy adjusts capacity to maintain…", type: "select-option",
+        codeTemplate: `Target tracking keeps a metric at a {{BLANK_1}} value.`,
+        blanks: [{ id: "BLANK_1", answer: "target", options: ["target", "maximum", "minimum", "average"] }],
+      },
+      {
+        id: "ha-3", title: "Route 53 Failover", description: "Failover routing needs…", type: "select-option",
+        codeTemplate: `Route 53 failover routing requires {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "health checks", options: ["health checks", "weighted records", "CNAME records", "alias records"] }],
+      },
+      {
+        id: "ha-4", title: "Route 53 Policies", description: "Which policy routes to the nearest region?", type: "select-option",
+        codeTemplate: `For lowest latency, use {{BLANK_1}} routing policy.`,
+        blanks: [{ id: "BLANK_1", answer: "Latency-based", options: ["Latency-based", "Geolocation", "Weighted", "Simple"] }],
+      },
+      {
+        id: "ha-5", title: "CloudFront", description: "CloudFront caches content at…", type: "select-option",
+        codeTemplate: `CloudFront caches content at {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "edge locations", options: ["edge locations", "AZs", "regions", "VPCs"] }],
+      },
+      {
+        id: "ha-6", title: "Global Accelerator", description: "Global Accelerator uses…", type: "select-option",
+        codeTemplate: `Global Accelerator routes traffic over the AWS {{BLANK_1}} network.`,
+        blanks: [{ id: "BLANK_1", answer: "global", options: ["global", "regional", "local", "edge"] }],
       },
     ],
   },
 
-  // === Auto Scaling ===
+  // ─── Monitoring & Operations ───
   {
-    id: "auto-scaling",
-    title: "Auto Scaling",
-    description: "Configure auto scaling groups and launch templates.",
-    icon: "📈",
+    id: "aws-operations",
+    title: "Monitoring & Ops",
+    description: "CloudWatch, CloudTrail, Config, Systems Manager.",
+    icon: "📊",
     category: "aws",
     tasks: [
       {
-        id: "asg-1",
-        title: "Launch Template",
-        description: "Create a launch template for ASG instances.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_launch_template" "app" {
-  name_prefix   = "app-"
-  image_id      = var.ami_id
-  instance_type = "{{BLANK_1}}"
-
-  network_interfaces {
-    associate_public_ip_address = true
-    security_groups             = [aws_security_group.app.{{BLANK_2}}]
-  }
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "t3.small", hint: "Instance type" },
-          { id: "BLANK_2", answer: "id", hint: "Reference the SG" },
-        ],
+        id: "ops-1", title: "CloudWatch vs CloudTrail", description: "CloudTrail records…", type: "select-option",
+        codeTemplate: `CloudTrail records {{BLANK_1}} activity.`,
+        blanks: [{ id: "BLANK_1", answer: "API", options: ["API", "metric", "log", "network"] }],
       },
       {
-        id: "asg-2",
-        title: "Auto Scaling Group",
-        description: "Create an ASG with min/max capacity.",
-        type: "fill-blank",
-        codeTemplate: `resource "aws_autoscaling_group" "app" {
-  desired_capacity = 2
-  max_size         = {{BLANK_1}}
-  min_size         = {{BLANK_2}}
+        id: "ops-2", title: "CloudWatch Alarms", description: "Alarms can trigger…", type: "select-option",
+        codeTemplate: `CloudWatch Alarms can trigger {{BLANK_1}} actions.`,
+        blanks: [{ id: "BLANK_1", answer: "Auto Scaling", options: ["Auto Scaling", "Lambda only", "EC2 only", "S3 only"] }],
+      },
+      {
+        id: "ops-3", title: "AWS Config", description: "AWS Config evaluates…", type: "select-option",
+        codeTemplate: `AWS Config evaluates resource {{BLANK_1}} against rules.`,
+        blanks: [{ id: "BLANK_1", answer: "compliance", options: ["compliance", "performance", "cost", "security"] }],
+      },
+      {
+        id: "ops-4", title: "Systems Manager", description: "SSM Session Manager replaces…", type: "select-option",
+        codeTemplate: `SSM Session Manager provides shell access without {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "SSH keys", options: ["SSH keys", "IAM roles", "VPN", "security groups"] }],
+      },
+      {
+        id: "ops-5", title: "EventBridge", description: "EventBridge is the evolution of…", type: "select-option",
+        codeTemplate: `EventBridge is the successor to {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "CloudWatch Events", options: ["CloudWatch Events", "SNS", "SQS", "Step Functions"] }],
+      },
+      {
+        id: "ops-6", title: "Trusted Advisor", description: "Trusted Advisor checks for…", type: "select-option",
+        codeTemplate: `Trusted Advisor checks cost, performance, security, fault tolerance, and {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "service limits", options: ["service limits", "compliance", "logging", "encryption"] }],
+      },
+    ],
+  },
 
-  launch_template {
-    id      = aws_launch_template.app.id
-    version = "{{BLANK_3}}"
-  }
+  // ─── Serverless ───
+  {
+    id: "aws-serverless",
+    title: "Serverless",
+    description: "Lambda, API Gateway, Step Functions, SQS, SNS.",
+    icon: "λ",
+    category: "aws",
+    tasks: [
+      {
+        id: "sls-1", title: "Lambda Timeout", description: "Max Lambda timeout?", type: "select-option",
+        codeTemplate: `Lambda functions can run for up to {{BLANK_1}} minutes.`,
+        blanks: [{ id: "BLANK_1", answer: "15", options: ["15", "5", "30", "60"] }],
+      },
+      {
+        id: "sls-2", title: "Lambda Memory", description: "Lambda memory range?", type: "select-option",
+        codeTemplate: `Lambda memory ranges from 128 MB to {{BLANK_1}} MB.`,
+        blanks: [{ id: "BLANK_1", answer: "10240", options: ["10240", "3008", "4096", "8192"] }],
+      },
+      {
+        id: "sls-3", title: "API Gateway Types", description: "For WebSocket APIs, use…", type: "select-option",
+        codeTemplate: `API Gateway {{BLANK_1}} supports WebSocket connections.`,
+        blanks: [{ id: "BLANK_1", answer: "V2 (HTTP API)", options: ["V2 (HTTP API)", "V1 (REST API)", "Both", "Neither"] }],
+      },
+      {
+        id: "sls-4", title: "SQS Types", description: "FIFO queues guarantee…", type: "select-option",
+        codeTemplate: `SQS FIFO queues guarantee {{BLANK_1}} processing.`,
+        blanks: [{ id: "BLANK_1", answer: "exactly-once, ordered", options: ["exactly-once, ordered", "at-least-once", "at-most-once", "best-effort"] }],
+      },
+      {
+        id: "sls-5", title: "Step Functions", description: "Step Functions orchestrate…", type: "select-option",
+        codeTemplate: `Step Functions orchestrate {{BLANK_1}} as visual workflows.`,
+        blanks: [{ id: "BLANK_1", answer: "distributed applications", options: ["distributed applications", "EC2 instances", "databases", "networks"] }],
+      },
+      {
+        id: "sls-6", title: "Dead Letter Queue", description: "A DLQ catches messages that…", type: "select-option",
+        codeTemplate: `A Dead Letter Queue receives messages that {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "failed processing", options: ["failed processing", "are too large", "expire", "are duplicated"] }],
+      },
+    ],
+  },
 
-  vpc_zone_identifier = [aws_subnet.private_a.id, aws_subnet.private_b.id]
-}`,
-        blanks: [
-          { id: "BLANK_1", answer: "4", hint: "Maximum instances" },
-          { id: "BLANK_2", answer: "1", hint: "Minimum instances" },
-          { id: "BLANK_3", answer: "$Latest", hint: "Use latest template version" },
-        ],
+  // ─── Cost Optimization ───
+  {
+    id: "aws-cost",
+    title: "Cost Optimization",
+    description: "Pricing models, Cost Explorer, budgets, Savings Plans.",
+    icon: "💰",
+    category: "aws",
+    tasks: [
+      {
+        id: "cost-1", title: "Savings Plans", description: "Compute Savings Plans apply to…", type: "select-option",
+        codeTemplate: `Compute Savings Plans cover EC2, Fargate, and {{BLANK_1}}.`,
+        blanks: [{ id: "BLANK_1", answer: "Lambda", options: ["Lambda", "S3", "RDS", "DynamoDB"] }],
+      },
+      {
+        id: "cost-2", title: "S3 Intelligent Tiering", description: "Intelligent Tiering automatically moves data between…", type: "select-option",
+        codeTemplate: `Intelligent Tiering moves data between {{BLANK_1}} access tiers.`,
+        blanks: [{ id: "BLANK_1", answer: "frequent and infrequent", options: ["frequent and infrequent", "hot and cold", "fast and slow", "primary and secondary"] }],
+      },
+      {
+        id: "cost-3", title: "Cost Allocation Tags", description: "Cost allocation tags help…", type: "select-option",
+        codeTemplate: `Cost allocation tags help {{BLANK_1}} AWS spending.`,
+        blanks: [{ id: "BLANK_1", answer: "categorize and track", options: ["categorize and track", "reduce", "encrypt", "optimize"] }],
       },
     ],
   },
