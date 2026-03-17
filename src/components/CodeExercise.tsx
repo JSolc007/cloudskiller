@@ -219,16 +219,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
               <Terminal className="w-4 h-4 animate-pulse" />
               <span className="font-mono text-xs">Checking...</span>
             </motion.div>
-          ) : validationState === "success" ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center gap-2 text-success text-sm font-medium"
-            >
-              <Check className="w-4 h-4" />
-              <span>Correct!</span>
-            </motion.div>
           ) : validationState === "error" ? (
             <motion.div
               key="error"
@@ -253,6 +243,23 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
           ) : null}
         </AnimatePresence>
       </div>
+
+      {/* Full-width success banner */}
+      <AnimatePresence>
+        {validationState === "success" && (
+          <motion.div
+            key="success-banner"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            className="fixed bottom-0 left-0 right-0 z-50 bg-success text-success-foreground py-6 px-8 flex items-center justify-center gap-4"
+          >
+            <Check className="w-8 h-8" />
+            <span className="text-2xl font-bold tracking-wide">Correct!</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
