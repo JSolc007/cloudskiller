@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Task } from "@/data/chapters";
+import { Task } from "@/data/types";
 import { Check, X, ArrowRight, Terminal } from "lucide-react";
 
 interface CodeExerciseProps {
@@ -16,7 +16,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
   const [errors, setErrors] = useState<Record<string, boolean>>({});
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
-  // Reset state when task changes
   useEffect(() => {
     setAnswers({});
     setFocusedBlank(null);
@@ -27,7 +26,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
   const handleSubmit = useCallback(() => {
     setValidationState("validating");
 
-    // Simulate terraform plan
     setTimeout(() => {
       const newErrors: Record<string, boolean> = {};
       let allCorrect = true;
@@ -43,17 +41,16 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
 
       if (allCorrect) {
         setValidationState("success");
-        setTimeout(onComplete, 1200);
+        setTimeout(onComplete, 800);
       } else {
         setErrors(newErrors);
         setValidationState("error");
         onError();
-        setTimeout(() => setValidationState("idle"), 2000);
+        setTimeout(() => setValidationState("idle"), 1500);
       }
-    }, 800);
+    }, 400);
   }, [answers, task.blanks, onComplete, onError]);
 
-  // Cmd+Enter to submit
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
@@ -65,6 +62,12 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     return () => window.removeEventListener("keydown", handler);
   }, [handleSubmit]);
 
+  const handleOptionSelect = (blankId: string, option: string) => {
+    if (validationState === "validating" || validationState === "success") return;
+    setAnswers((prev) => ({ ...prev, [blankId]: option }));
+    setErrors((prev) => ({ ...prev, [blankId]: false }));
+  };
+
   const renderCode = () => {
     const parts = task.codeTemplate.split(/({{BLANK_\d+}})/g);
 
@@ -75,8 +78,28 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
         const blank = task.blanks.find((b) => b.id === blankId);
         const isError = errors[blankId];
         const isSuccess = validationState === "success";
-        const isFocused = focusedBlank === blankId;
 
+        // Select-option: show the selected answer inline
+        if (task.type === "select-option" && blank?.options) {
+          const selected = answers[blankId];
+          const displayValue = isSuccess ? blank.answer : selected || "______";
+          return (
+            <span
+              key={i}
+              className={`inline-block font-mono text-sm px-2 py-0.5 rounded border-b-2 cursor-pointer transition-iq
+                ${isSuccess ? "border-success text-success bg-success/10" : ""}
+                ${isError && !isSuccess ? "border-destructive text-destructive bg-destructive/10 animate-shake" : ""}
+                ${!isError && !isSuccess && selected ? "border-primary text-primary bg-primary/10" : ""}
+                ${!isError && !isSuccess && !selected ? "border-muted-foreground/30 text-muted-foreground" : ""}
+              `}
+            >
+              {displayValue}
+            </span>
+          );
+        }
+
+        // Fill-blank: input field
+        const isFocused = focusedBlank === blankId;
         return (
           <span key={i} className="relative inline-block">
             <input
@@ -108,24 +131,80 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     });
   };
 
+  // Render option buttons for select-option type
+  const renderOptions = () => {
+    if (task.type !== "select-option") return null;
+
+    return (
+      <div className="mt-4 space-y-3">
+        {task.blanks.map((blank) => {
+          if (!blank.options) return null;
+          return (
+            <div key={blank.id} className="flex flex-wrap gap-2">
+              {blank.options.map((option) => {
+                const isSelected = answers[blank.id] === option;
+                const isError = errors[blank.id] && isSelected;
+                const isCorrect = validationState === "success" && option === blank.answer;
+                return (
+                  <button
+                    key={option}
+                    onClick={() => handleOptionSelect(blank.id, option)}
+                    disabled={validationState === "validating" || validationState === "success"}
+                    className={`px-3 py-2 rounded-lg text-sm font-medium transition-iq border
+                      ${isCorrect ? "bg-success/15 border-success text-success" : ""}
+                      ${isError ? "bg-destructive/15 border-destructive text-destructive animate-shake" : ""}
+                      ${isSelected && !isError && !isCorrect ? "bg-primary/15 border-primary text-primary" : ""}
+                      ${!isSelected && !isCorrect ? "bg-secondary/50 border-border text-foreground hover:bg-secondary hover:border-primary/30" : ""}
+                      disabled:opacity-60 disabled:cursor-not-allowed
+                    `}
+                  >
+                    {option}
+                  </button>
+                );
+              })}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  // Auto-submit for select-option when all blanks filled
+  useEffect(() => {
+    if (task.type === "select-option" && validationState === "idle") {
+      const allFilled = task.blanks.every((b) => answers[b.id]);
+      if (allFilled) {
+        const timer = setTimeout(handleSubmit, 300);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [answers, task.type, task.blanks, validationState, handleSubmit]);
+
   return (
     <div className="flex flex-col h-full">
       {/* Task instruction */}
-      <div className="mb-6">
+      <div className="mb-4">
         <h2 className="text-lg font-semibold text-foreground">{task.title}</h2>
         <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
       </div>
 
       {/* Code block */}
-      <div className="code-block flex-1 overflow-auto whitespace-pre font-mono text-sm leading-relaxed shadow-elevated">
+      <div className="code-block overflow-auto whitespace-pre font-mono text-sm leading-relaxed shadow-elevated">
         {renderCode()}
       </div>
 
+      {/* Options for select-option */}
+      {renderOptions()}
+
       {/* Bottom bar */}
-      <div className="mt-4 flex items-center justify-between">
+      <div className="mt-auto pt-4 flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <kbd className="px-1.5 py-0.5 bg-secondary rounded-sm font-mono text-[10px]">⌘ Enter</kbd>
-          <span>to validate</span>
+          {task.type === "fill-blank" && (
+            <>
+              <kbd className="px-1.5 py-0.5 bg-secondary rounded-sm font-mono text-[10px]">⌘ Enter</kbd>
+              <span>to validate</span>
+            </>
+          )}
         </div>
 
         <AnimatePresence mode="wait">
@@ -138,7 +217,7 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
               className="flex items-center gap-2 text-sm text-muted-foreground"
             >
               <Terminal className="w-4 h-4 animate-pulse" />
-              <span className="font-mono text-xs">Running terraform plan...</span>
+              <span className="font-mono text-xs">Checking...</span>
             </motion.div>
           ) : validationState === "success" ? (
             <motion.div
@@ -148,7 +227,7 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
               className="flex items-center gap-2 text-success text-sm font-medium"
             >
               <Check className="w-4 h-4" />
-              <span>Plan succeeded! No changes needed.</span>
+              <span>Correct!</span>
             </motion.div>
           ) : validationState === "error" ? (
             <motion.div
@@ -158,9 +237,9 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
               className="flex items-center gap-2 text-destructive text-sm font-medium"
             >
               <X className="w-4 h-4" />
-              <span>Plan failed. Check highlighted fields.</span>
+              <span>Try again!</span>
             </motion.div>
-          ) : (
+          ) : task.type === "fill-blank" ? (
             <motion.button
               key="submit"
               initial={{ opacity: 0 }}
@@ -168,10 +247,10 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
               onClick={handleSubmit}
               className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-sm text-sm font-medium hover:bg-primary/90 transition-iq"
             >
-              <span>Validate</span>
+              <span>Check</span>
               <ArrowRight className="w-4 h-4" />
             </motion.button>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
     </div>

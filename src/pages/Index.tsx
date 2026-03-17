@@ -6,7 +6,7 @@ import { ChapterCard } from "@/components/ChapterCard";
 import { TaskNode } from "@/components/TaskNode";
 import { CodeExercise } from "@/components/CodeExercise";
 import { ProgressBar } from "@/components/ProgressBar";
-import { ChevronLeft, BookOpen, Code2, Cloud } from "lucide-react";
+import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch } from "lucide-react";
 
 const Index = () => {
   const { markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress } = useProgress();
@@ -197,9 +197,9 @@ const Index = () => {
           <div className="flex items-center gap-2 mb-6">
             {[
               { key: null, label: "All", icon: BookOpen },
-              { key: "aws", label: "AWS", icon: Cloud },
+              { key: "aws", label: "AWS SAA", icon: Cloud },
               { key: "terraform", label: "Terraform", icon: Code2 },
-              { key: "devops", label: "DevOps", icon: Code2 },
+              { key: "gitlab", label: "GitLab CI/CD", icon: GitBranch },
             ].map((cat) => (
               <button
                 key={cat.label}
@@ -243,7 +243,7 @@ const Index = () => {
           {/* Stats hint */}
           <div className="mt-8 p-4 bg-card rounded-lg shadow-card">
             <p className="text-xs text-muted-foreground font-mono">
-              💡 84% of Terraform users forget the <code className="text-primary">lifecycle</code> block. Practice makes permanent.
+              🎯 3 certifikace • AWS SAA-C03 • Terraform Associate • GitLab CI/CD Associate
             </p>
           </div>
         </div>

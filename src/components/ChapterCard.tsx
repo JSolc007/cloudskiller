@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Chapter } from "@/data/chapters";
+import { Chapter } from "@/data/types";
 import { ProgressBar } from "./ProgressBar";
 
 interface ChapterCardProps {
@@ -12,7 +12,13 @@ interface ChapterCardProps {
 const categoryColors: Record<string, string> = {
   aws: "bg-primary/10 text-primary",
   terraform: "bg-accent/10 text-accent",
-  devops: "bg-success/10 text-success",
+  gitlab: "bg-success/10 text-success",
+};
+
+const categoryLabels: Record<string, string> = {
+  aws: "AWS SAA",
+  terraform: "Terraform",
+  gitlab: "GitLab CI/CD",
 };
 
 export function ChapterCard({ chapter, progress, isActive, onClick }: ChapterCardProps) {
@@ -31,7 +37,7 @@ export function ChapterCard({ chapter, progress, isActive, onClick }: ChapterCar
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-sm text-foreground truncate">{chapter.title}</h3>
             <span className={`text-[10px] font-medium uppercase tracking-wider px-1.5 py-0.5 rounded-sm ${categoryColors[chapter.category]}`}>
-              {chapter.category}
+              {categoryLabels[chapter.category] || chapter.category}
             </span>
           </div>
           <p className="text-xs text-muted-foreground line-clamp-2">{chapter.description}</p>
