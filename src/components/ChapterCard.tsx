@@ -12,7 +12,13 @@ interface ChapterCardProps {
 const categoryColors: Record<string, string> = {
   aws: "bg-primary/10 text-primary",
   terraform: "bg-accent/10 text-accent",
-  devops: "bg-success/10 text-success",
+  gitlab: "bg-success/10 text-success",
+};
+
+const categoryLabels: Record<string, string> = {
+  aws: "AWS SAA",
+  terraform: "Terraform",
+  gitlab: "GitLab CI/CD",
 };
 
 export function ChapterCard({ chapter, progress, isActive, onClick }: ChapterCardProps) {
