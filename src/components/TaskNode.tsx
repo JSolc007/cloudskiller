@@ -1,5 +1,5 @@
 import { Check } from "lucide-react";
-import { Task } from "@/data/chapters";
+import { Task } from "@/data/types";
 
 interface TaskNodeProps {
   task: Task;
