@@ -12,6 +12,6 @@ export interface Chapter {
   title: string;
   description: string;
   icon: string;
-  category: "aws" | "terraform" | "gitlab";
+  category: string;
   tasks: Task[];
 }
