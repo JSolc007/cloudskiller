@@ -96,7 +96,7 @@ build_job:
   variables:
     BUILD_MODE: "{{BLANK_2}}"
   script:
-    - echo "Building ${{BLANK_3}}"
+    - echo "Building \${{BLANK_3}}"
     - npm run build`,
         blanks: [
           { id: "BLANK_1", answer: "variables", hint: "Top-level key for pipeline variables" },
