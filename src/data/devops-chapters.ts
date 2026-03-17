@@ -77,7 +77,7 @@ export const devopsChapters: Chapter[] = [
       },
       {
         id: "glv-3", title: "Commit SHA", description: "Predefined var for commit hash?", type: "fill-blank",
-        codeTemplate: `docker tag app:latest app:${{BLANK_1}}`,
+        codeTemplate: `docker tag app:latest app:\${{BLANK_1}}`,
         blanks: [{ id: "BLANK_1", answer: "CI_COMMIT_SHA", hint: "Full commit hash variable" }],
       },
       {
