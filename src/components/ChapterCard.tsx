@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Chapter } from "@/data/chapters";
+import { Chapter } from "@/data/types";
 import { ProgressBar } from "./ProgressBar";
 
 interface ChapterCardProps {
