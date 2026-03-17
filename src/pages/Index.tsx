@@ -243,7 +243,7 @@ const Index = () => {
           {/* Stats hint */}
           <div className="mt-8 p-4 bg-card rounded-lg shadow-card">
             <p className="text-xs text-muted-foreground font-mono">
-              💡 84% of Terraform users forget the <code className="text-primary">lifecycle</code> block. Practice makes permanent.
+              🎯 3 certifikace • AWS SAA-C03 • Terraform Associate • GitLab CI/CD Associate
             </p>
           </div>
         </div>
