@@ -82,7 +82,7 @@ export const devopsChapters: Chapter[] = [
       },
       {
         id: "glv-4", title: "Branch Name", description: "Predefined var for current branch?", type: "fill-blank",
-        codeTemplate: `if: ${{BLANK_1}} == "main"`,
+        codeTemplate: `if: \${{BLANK_1}} == "main"`,
         blanks: [{ id: "BLANK_1", answer: "CI_COMMIT_BRANCH", hint: "Branch name variable" }],
       },
       {
