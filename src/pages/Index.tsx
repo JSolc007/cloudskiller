@@ -197,9 +197,9 @@ const Index = () => {
           <div className="flex items-center gap-2 mb-6">
             {[
               { key: null, label: "All", icon: BookOpen },
-              { key: "aws", label: "AWS", icon: Cloud },
+              { key: "aws", label: "AWS SAA", icon: Cloud },
               { key: "terraform", label: "Terraform", icon: Code2 },
-              { key: "devops", label: "DevOps", icon: Code2 },
+              { key: "gitlab", label: "GitLab CI/CD", icon: GitBranch },
             ].map((cat) => (
               <button
                 key={cat.label}
