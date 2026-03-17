@@ -112,8 +112,8 @@ build_job:
         codeTemplate: `deploy_job:
   stage: deploy
   script:
-    - docker login -u $CI_REGISTRY_USER -p ${{BLANK_1}} $CI_REGISTRY
-    - docker push $CI_REGISTRY_IMAGE:${{BLANK_2}}
+    - docker login -u $CI_REGISTRY_USER -p \${{BLANK_1}} $CI_REGISTRY
+    - docker push $CI_REGISTRY_IMAGE:\${{BLANK_2}}
   rules:
     - if: $CI_COMMIT_{{BLANK_3}}`,
         blanks: [
