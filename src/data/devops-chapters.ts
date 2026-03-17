@@ -238,7 +238,7 @@ export const devopsChapters: Chapter[] = [
       },
       {
         id: "gld-4", title: "Registry Login", description: "Predefined var for registry password?", type: "fill-blank",
-        codeTemplate: `docker login -u $CI_REGISTRY_USER -p ${{BLANK_1}} $CI_REGISTRY`,
+        codeTemplate: `docker login -u $CI_REGISTRY_USER -p \${{BLANK_1}} $CI_REGISTRY`,
         blanks: [{ id: "BLANK_1", answer: "CI_REGISTRY_PASSWORD", hint: "Registry auth variable" }],
       },
       {
