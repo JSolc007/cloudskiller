@@ -56,6 +56,7 @@ export function useProgress() {
           ...prev[chapterId],
           [taskId]: {
             completed: prev[chapterId]?.[taskId]?.completed ?? false,
+            helped: prev[chapterId]?.[taskId]?.helped ?? false,
             attempts: (prev[chapterId]?.[taskId]?.attempts ?? 0) + 1,
           },
         },
