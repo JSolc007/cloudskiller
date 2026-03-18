@@ -244,7 +244,7 @@ const Index = () => {
           {/* Stats hint */}
           <div className="mt-8 p-4 bg-card rounded-lg shadow-card">
             <p className="text-xs text-muted-foreground font-mono">
-              🎯 Four certifications in one app • AWS SAA-C03 • Terraform Associate • GitLab CI/CD Associate • Kubernetes CKA
+              🎯 4 certifications in 1 app • AWS SAA-C03 • Terraform Associate • GitLab CI/CD Associate • Kubernetes CKA
             </p>
           </div>
         </div>
