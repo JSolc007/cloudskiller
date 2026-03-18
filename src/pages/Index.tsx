@@ -239,6 +239,7 @@ const Index = () => {
                   key={chapter.id}
                   chapter={chapter}
                   progress={getChapterProgress(chapter.id, chapter.tasks.length)}
+                  helped={hasChapterHelped(chapter.id)}
                   isActive={false}
                   onClick={() => {
                     setSelectedChapterId(chapter.id);

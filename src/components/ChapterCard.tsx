@@ -43,7 +43,7 @@ export function ChapterCard({ chapter, progress, helped = false, isActive, onCli
           </div>
           <p className="text-xs text-muted-foreground line-clamp-2">{chapter.description}</p>
           <div className="mt-2 flex items-center gap-2">
-            <ProgressBar value={progress} className="flex-1 rounded-full" />
+            <ProgressBar value={progress} helped={helped} className="flex-1 rounded-full" />
             <span className="text-[10px] font-mono text-muted-foreground">{progress}%</span>
           </div>
         </div>
