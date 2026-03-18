@@ -30,12 +30,15 @@ const Index = () => {
 
   const totalProgress = useMemo(() => {
     const totalTasks = chapters.reduce((acc, c) => acc + c.tasks.length, 0);
-    const completedTasks = chapters.reduce(
-      (acc, c) => acc + c.tasks.filter((t) => isTaskCompleted(c.id, t.id)).length,
+    const completedScore = chapters.reduce(
+      (acc, c) => acc + c.tasks.reduce((s, t) => {
+        if (!isTaskCompleted(c.id, t.id)) return s;
+        return s + (isTaskHelped(c.id, t.id) ? 0.5 : 1);
+      }, 0),
       0
     );
-    return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  }, [isTaskCompleted]);
+    return totalTasks > 0 ? Math.round((completedScore / totalTasks) * 100) : 0;
+  }, [isTaskCompleted, isTaskHelped]);
 
   const handleTaskComplete = (helped: boolean) => {
     if (selectedChapter && selectedTask) {
