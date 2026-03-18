@@ -173,7 +173,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Cloud className="w-5 h-5 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">InfraQuest</h1>
+            <h1 className="text-lg font-semibold text-foreground">Cloud Skiller</h1>
           </div>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Code2 className="w-3.5 h-3.5" />
