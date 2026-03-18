@@ -93,5 +93,4 @@ export function useProgress() {
 
   return { progress, markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress };
 
-  return { progress, markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress };
 }
