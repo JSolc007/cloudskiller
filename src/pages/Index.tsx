@@ -200,6 +200,7 @@ const Index = () => {
               { key: "aws", label: "AWS SAA", icon: Cloud },
               { key: "terraform", label: "Terraform", icon: Code2 },
               { key: "gitlab", label: "GitLab CI/CD", icon: GitBranch },
+              { key: "kubernetes", label: "Kubernetes CKA", icon: Container },
             ].map((cat) => (
               <button
                 key={cat.label}
