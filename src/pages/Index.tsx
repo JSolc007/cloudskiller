@@ -9,7 +9,7 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch, Container } from "lucide-react";
 
 const Index = () => {
-  const { markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress } = useProgress();
+  const { markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, hasChapterHelped, getChapterProgress } = useProgress();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
@@ -39,6 +39,10 @@ const Index = () => {
     );
     return totalTasks > 0 ? Math.round((completedScore / totalTasks) * 100) : 0;
   }, [isTaskCompleted, isTaskHelped]);
+
+  const totalHelped = useMemo(() => {
+    return chapters.some((c) => hasChapterHelped(c.id));
+  }, [hasChapterHelped]);
 
   const handleTaskComplete = (helped: boolean) => {
     if (selectedChapter && selectedTask) {
@@ -82,7 +86,7 @@ const Index = () => {
     return (
       <div className="h-screen flex flex-col bg-background">
         {/* Top bar */}
-        <ProgressBar value={chapterTaskProgress} />
+        <ProgressBar value={chapterTaskProgress} helped={hasChapterHelped(selectedChapter.id)} />
         <div className="flex items-center gap-3 px-6 py-3 border-b border-border">
           <button
             onClick={() => setSelectedTaskId(null)}
@@ -119,7 +123,7 @@ const Index = () => {
   if (selectedChapter) {
     return (
       <div className="h-screen flex flex-col bg-background">
-        <ProgressBar value={getChapterProgress(selectedChapter.id, selectedChapter.tasks.length)} />
+        <ProgressBar value={getChapterProgress(selectedChapter.id, selectedChapter.tasks.length)} helped={hasChapterHelped(selectedChapter.id)} />
         <div className="flex items-center gap-3 px-6 py-3 border-b border-border">
           <button
             onClick={() => setSelectedChapterId(null)}
@@ -169,7 +173,7 @@ const Index = () => {
   // Dashboard
   return (
     <div className="h-screen flex flex-col bg-background">
-      <ProgressBar value={totalProgress} />
+      <ProgressBar value={totalProgress} helped={totalHelped} />
 
       {/* Header */}
       <header className="px-6 py-4 border-b border-border">
@@ -235,6 +239,7 @@ const Index = () => {
                   key={chapter.id}
                   chapter={chapter}
                   progress={getChapterProgress(chapter.id, chapter.tasks.length)}
+                  helped={hasChapterHelped(chapter.id)}
                   isActive={false}
                   onClick={() => {
                     setSelectedChapterId(chapter.id);
