@@ -6,7 +6,7 @@ import { ChapterCard } from "@/components/ChapterCard";
 import { TaskNode } from "@/components/TaskNode";
 import { CodeExercise } from "@/components/CodeExercise";
 import { ProgressBar } from "@/components/ProgressBar";
-import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch } from "lucide-react";
+import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch, Container } from "lucide-react";
 
 const Index = () => {
   const { markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress } = useProgress();
