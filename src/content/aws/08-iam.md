@@ -81,3 +81,55 @@ Permission boundaries set the {{BLANK_1}} permissions an entity can have.
 ```
 
 - BLANK_1: maximum | maximum, minimum, default, temporary
+
+---
+
+## iam-7 | Policy Structure
+> The three main elements of an IAM policy statement?
+
+Type: select-option
+
+```template
+An IAM policy statement contains Effect, Action, and {{BLANK_1}}.
+```
+
+- BLANK_1: Resource | Resource, Principal, Condition, Version
+
+---
+
+## iam-8 | MFA Delete
+> MFA Delete protects against accidental…
+
+Type: select-option
+
+```template
+MFA Delete requires MFA to {{BLANK_1}} S3 object versions.
+```
+
+- BLANK_1: permanently delete | permanently delete, create, read, encrypt
+
+---
+
+## iam-9 | Cross-Account Access
+> Cross-account access is best achieved with…
+
+Type: select-option
+
+```template
+For cross-account access, use IAM {{BLANK_1}}.
+```
+
+- BLANK_1: roles | roles, users, groups, policies
+
+---
+
+## iam-10 | AWS SSO
+> AWS IAM Identity Center (formerly SSO) provides…
+
+Type: select-option
+
+```template
+IAM Identity Center provides {{BLANK_1}} across multiple AWS accounts.
+```
+
+- BLANK_1: single sign-on | single sign-on, MFA only, encryption, auditing

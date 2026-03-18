@@ -123,3 +123,16 @@ VPC Flow Logs can go to CloudWatch Logs or {{BLANK_1}}.
 ```
 
 - BLANK_1: S3 | S3, DynamoDB, EFS, Glacier
+
+---
+
+## net-10 | Direct Connect
+> AWS Direct Connect provides…
+
+Type: select-option
+
+```template
+AWS Direct Connect provides a {{BLANK_1}} connection from on-premises to AWS.
+```
+
+- BLANK_1: dedicated private | dedicated private, VPN encrypted, internet-based, satellite

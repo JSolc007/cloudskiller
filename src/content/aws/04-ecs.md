@@ -81,3 +81,55 @@ The ECS Execution Role is used to {{BLANK_1}}.
 ```
 
 - BLANK_1: pull images and write logs | pull images and write logs, call application APIs, manage load balancers, scale services
+
+---
+
+## ecs-7 | ECS vs EKS
+> EKS runs which orchestrator?
+
+Type: select-option
+
+```template
+EKS is a managed {{BLANK_1}} service.
+```
+
+- BLANK_1: Kubernetes | Kubernetes, Docker Swarm, ECS, Nomad
+
+---
+
+## ecs-8 | Task Placement
+> Fargate tasks do NOT require…
+
+Type: select-option
+
+```template
+With Fargate, you do NOT manage {{BLANK_1}}.
+```
+
+- BLANK_1: EC2 instances | EC2 instances, task definitions, IAM roles, container images
+
+---
+
+## ecs-9 | ALB Integration
+> ECS integrates with ALB using…
+
+Type: select-option
+
+```template
+ECS uses {{BLANK_1}} to register tasks with an ALB.
+```
+
+- BLANK_1: dynamic port mapping | dynamic port mapping, static IPs, DNS records, VPC peering
+
+---
+
+## ecs-10 | Capacity Providers
+> Capacity providers manage…
+
+Type: select-option
+
+```template
+ECS Capacity Providers manage the {{BLANK_1}} for your tasks.
+```
+
+- BLANK_1: infrastructure scaling | infrastructure scaling, IAM permissions, network routing, log storage

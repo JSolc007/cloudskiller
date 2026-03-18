@@ -94,3 +94,42 @@ For replication and persistence, use ElastiCache for {{BLANK_1}}.
 ```
 
 - BLANK_1: Redis | Redis, Memcached, Both, Neither
+
+---
+
+## rds-8 | RDS Proxy
+> RDS Proxy improves…
+
+Type: select-option
+
+```template
+RDS Proxy improves application {{BLANK_1}} by pooling database connections.
+```
+
+- BLANK_1: scalability | scalability, security, encryption, backup
+
+---
+
+## rds-9 | Aurora Global
+> Aurora Global Database provides…
+
+Type: select-option
+
+```template
+Aurora Global Database enables {{BLANK_1}} replication with <1 second lag.
+```
+
+- BLANK_1: cross-region | cross-region, cross-AZ, cross-account, cross-VPC
+
+---
+
+## rds-10 | DynamoDB Streams
+> DynamoDB Streams capture…
+
+Type: select-option
+
+```template
+DynamoDB Streams capture {{BLANK_1}} modifications to items.
+```
+
+- BLANK_1: time-ordered | time-ordered, random, weekly, batched
