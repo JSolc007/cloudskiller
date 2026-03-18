@@ -5,6 +5,7 @@ import { ProgressBar } from "./ProgressBar";
 interface ChapterCardProps {
   chapter: Chapter;
   progress: number;
+  helped?: boolean;
   isActive: boolean;
   onClick: () => void;
 }
