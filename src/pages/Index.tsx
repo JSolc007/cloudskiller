@@ -173,7 +173,7 @@ const Index = () => {
   // Dashboard
   return (
     <div className="h-screen flex flex-col bg-background">
-      <ProgressBar value={totalProgress} />
+      <ProgressBar value={totalProgress} helped={totalHelped} />
 
       {/* Header */}
       <header className="px-6 py-4 border-b border-border">
