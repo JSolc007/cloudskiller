@@ -88,3 +88,62 @@ ami = {{BLANK_1}}(var.amis, var.region, "ami-default")
 ```
 
 - BLANK_1: lookup (hint: Map lookup function)
+
+---
+
+## exp-7 | length function
+> Get the number of items in a list?
+
+Type: fill-blank
+
+```template
+count = {{BLANK_1}}(var.subnets)
+```
+
+- BLANK_1: length (hint: List/map size function)
+
+---
+
+## exp-8 | for Expression
+> Transform a list with for?
+
+Type: fill-blank
+
+```template
+upper_names = [{{BLANK_1}} n in var.names : upper(n)]
+```
+
+- BLANK_1: for (hint: Iteration keyword)
+
+---
+
+## exp-9 | Splat Expression
+> Get all IDs from a list of resources?
+
+Type: fill-blank
+
+```template
+ids = aws_instance.web[{{BLANK_1}}].id
+```
+
+- BLANK_1: * (hint: Splat operator)
+
+---
+
+## exp-10 | Dynamic Blocks
+> Generate repeated blocks dynamically?
+
+Type: fill-blank
+
+```template
+{{BLANK_1}} "ingress" {
+  for_each = var.ingress_rules
+  content {
+    from_port = ingress.value.port
+    to_port   = ingress.value.port
+    protocol  = "tcp"
+  }
+}
+```
+
+- BLANK_1: dynamic (hint: Generate nested blocks)

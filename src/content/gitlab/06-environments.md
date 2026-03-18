@@ -82,3 +82,72 @@ Protected environments only allow deploys by {{BLANK_1}}.
 ```
 
 - BLANK_1: authorized users | authorized users, anyone, bots only, admins only
+
+---
+
+## gle-6 | Auto URL
+> Use the environment URL for monitoring?
+
+Type: select-option
+
+```template
+The environment URL enables {{BLANK_1}} directly in GitLab.
+```
+
+- BLANK_1: monitoring and link access | monitoring and link access, automatic deployment, CI caching, artifact storage
+
+---
+
+## gle-7 | Environment Scope
+> Scope CI/CD variables to a specific environment?
+
+Type: select-option
+
+```template
+Variables can be scoped to a specific {{BLANK_1}} for environment-based config.
+```
+
+- BLANK_1: environment | environment, branch, tag, user
+
+---
+
+## gle-8 | Deployment Tier
+> Classify environments by tier.
+
+Type: fill-blank
+
+```template
+environment:
+  name: staging
+  {{BLANK_1}}: staging
+```
+
+- BLANK_1: deployment_tier (hint: Environment classification)
+
+---
+
+## gle-9 | Auto Stop
+> Automatically stop an environment after a time?
+
+Type: fill-blank
+
+```template
+environment:
+  name: review/$CI_COMMIT_REF_SLUG
+  {{BLANK_1}}: 1 day
+```
+
+- BLANK_1: auto_stop_in (hint: Auto-cleanup duration)
+
+---
+
+## gle-10 | Rollback
+> GitLab tracks deployment history for…
+
+Type: select-option
+
+```template
+GitLab tracks deployment history per environment for {{BLANK_1}}.
+```
+
+- BLANK_1: rollback capability | rollback capability, billing, caching, testing

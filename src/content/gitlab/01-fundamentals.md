@@ -93,3 +93,58 @@ Type: fill-blank
 ```
 
 - BLANK_1: before_script (hint: Pre-job hook keyword)
+
+---
+
+## glf-7 | after_script
+> Commands that run after every job (even on failure)?
+
+Type: fill-blank
+
+```template
+{{BLANK_1}}:
+  - echo "Cleanup complete"
+```
+
+- BLANK_1: after_script (hint: Post-job hook keyword)
+
+---
+
+## glf-8 | Allow Failure
+> Let a job fail without blocking the pipeline?
+
+Type: fill-blank
+
+```template
+lint_job:
+  script: npm run lint
+  {{BLANK_1}}: true
+```
+
+- BLANK_1: allow_failure (hint: Continue pipeline on job failure)
+
+---
+
+## glf-9 | Pipeline Trigger
+> What triggers a pipeline by default?
+
+Type: select-option
+
+```template
+Pipelines are triggered by default on every {{BLANK_1}}.
+```
+
+- BLANK_1: git push | git push, merge request, manual click, schedule
+
+---
+
+## glf-10 | Job Dependencies
+> Jobs in the same stage run…
+
+Type: select-option
+
+```template
+Jobs in the same stage run {{BLANK_1}}.
+```
+
+- BLANK_1: in parallel | in parallel, sequentially, randomly, conditionally

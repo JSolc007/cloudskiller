@@ -97,3 +97,42 @@ terraform state {{BLANK_1}} aws_instance.old aws_instance.new
 ```
 
 - BLANK_1: mv (hint: Move/rename command)
+
+---
+
+## st-8 | State Remove
+> Remove a resource from state without destroying it?
+
+Type: fill-blank
+
+```template
+terraform state {{BLANK_1}} aws_instance.old
+```
+
+- BLANK_1: rm (hint: Remove from state)
+
+---
+
+## st-9 | Sensitive Data in State
+> State files may contain…
+
+Type: select-option
+
+```template
+Terraform state may contain {{BLANK_1}} in plain text.
+```
+
+- BLANK_1: sensitive data | sensitive data, encrypted secrets, hashed values, nothing sensitive
+
+---
+
+## st-10 | Force Unlock
+> Force-release a stuck state lock?
+
+Type: fill-blank
+
+```template
+terraform force-{{BLANK_1}} <LOCK_ID>
+```
+
+- BLANK_1: unlock (hint: Release stuck lock)

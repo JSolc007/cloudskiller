@@ -68,3 +68,68 @@ FSx for Windows File Server uses {{BLANK_1}}.
 ```
 
 - BLANK_1: SMB | SMB, NFS, iSCSI, CIFS
+
+---
+
+## efs-6 | EBS Snapshots
+> EBS snapshots are stored in…
+
+Type: select-option
+
+```template
+EBS snapshots are stored in {{BLANK_1}}.
+```
+
+- BLANK_1: S3 | S3, EFS, Glacier, DynamoDB
+
+---
+
+## efs-7 | EFS Performance Modes
+> For latency-sensitive workloads, use EFS…
+
+Type: select-option
+
+```template
+For latency-sensitive workloads, use {{BLANK_1}} performance mode.
+```
+
+- BLANK_1: General Purpose | General Purpose, Max I/O, Provisioned, Bursting
+
+---
+
+## efs-8 | gp3 Baseline
+> gp3 volumes provide a baseline of…
+
+Type: select-option
+
+```template
+gp3 volumes provide {{BLANK_1}} IOPS baseline regardless of size.
+```
+
+- BLANK_1: 3000 | 3000, 100, 16000, 500
+
+---
+
+## efs-9 | Instance Store
+> Instance store volumes are…
+
+Type: select-option
+
+```template
+Instance store volumes are {{BLANK_1}} — data is lost when instance stops.
+```
+
+- BLANK_1: ephemeral | ephemeral, persistent, replicated, encrypted
+
+---
+
+## efs-10 | FSx for Lustre
+> FSx for Lustre is designed for…
+
+Type: select-option
+
+```template
+FSx for Lustre is optimized for {{BLANK_1}} workloads.
+```
+
+- BLANK_1: high-performance computing | high-performance computing, file sharing, backup, archival

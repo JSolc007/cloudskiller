@@ -55,3 +55,81 @@ terraform workspace {{BLANK_1}} production
 ```
 
 - BLANK_1: select (hint: Switch command)
+
+---
+
+## ws-5 | List Workspaces
+> List all workspaces?
+
+Type: fill-blank
+
+```template
+terraform workspace {{BLANK_1}}
+```
+
+- BLANK_1: list (hint: Show all workspaces)
+
+---
+
+## ws-6 | Show Workspace
+> Show current workspace?
+
+Type: fill-blank
+
+```template
+terraform workspace {{BLANK_1}}
+```
+
+- BLANK_1: show (hint: Display current workspace name)
+
+---
+
+## ws-7 | Delete Workspace
+> Delete a workspace?
+
+Type: fill-blank
+
+```template
+terraform workspace {{BLANK_1}} staging
+```
+
+- BLANK_1: delete (hint: Remove a workspace)
+
+---
+
+## ws-8 | Workspace State
+> Each workspace has its own…
+
+Type: select-option
+
+```template
+Each workspace has its own {{BLANK_1}}.
+```
+
+- BLANK_1: state file | state file, provider config, variable file, module cache
+
+---
+
+## ws-9 | Workspace Use Case
+> Workspaces are best for…
+
+Type: select-option
+
+```template
+Workspaces are best suited for {{BLANK_1}} with the same config.
+```
+
+- BLANK_1: parallel environments | parallel environments, different projects, separate teams, multi-cloud
+
+---
+
+## ws-10 | Workspace Limitations
+> Workspaces should NOT replace…
+
+Type: select-option
+
+```template
+Workspaces are not a substitute for {{BLANK_1}} separation.
+```
+
+- BLANK_1: separate repo/config | separate repo/config, state locking, variable files, provider configs

@@ -91,3 +91,60 @@ The keywords {{BLANK_1}} are legacy and replaced by rules.
 ```
 
 - BLANK_1: only/except | only/except, when/unless, if/else, allow/deny
+
+---
+
+## glr-7 | Exists Filter
+> Run a job only if a file exists?
+
+Type: fill-blank
+
+```template
+rules:
+  - {{BLANK_1}}:
+      - Dockerfile
+```
+
+- BLANK_1: exists (hint: File existence check)
+
+---
+
+## glr-8 | Always Run
+> Default 'when' value if rule matches?
+
+Type: select-option
+
+```template
+If a rule matches without a 'when' key, the job runs with when: {{BLANK_1}}.
+```
+
+- BLANK_1: on_success | on_success, always, manual, delayed
+
+---
+
+## glr-9 | Merge Request Pipeline
+> Run a job only on merge requests?
+
+Type: fill-blank
+
+```template
+rules:
+  - if: ${{BLANK_1}}
+```
+
+- BLANK_1: CI_MERGE_REQUEST_ID (hint: Merge request predefined variable)
+
+---
+
+## glr-10 | Delayed Job
+> Run a job after a delay?
+
+Type: fill-blank
+
+```template
+rules:
+  - when: delayed
+    {{BLANK_1}}: 30 minutes
+```
+
+- BLANK_1: start_in (hint: Delay duration keyword)

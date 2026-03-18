@@ -84,3 +84,58 @@ Masked variables are {{BLANK_1}} in job logs.
 ```
 
 - BLANK_1: hidden | hidden, encrypted, deleted, compressed
+
+---
+
+## glv-7 | Pipeline ID
+> Predefined variable for the pipeline ID?
+
+Type: fill-blank
+
+```template
+echo "Pipeline: ${{BLANK_1}}"
+```
+
+- BLANK_1: CI_PIPELINE_ID (hint: Unique pipeline identifier)
+
+---
+
+## glv-8 | Project Dir
+> Predefined variable for the project directory?
+
+Type: fill-blank
+
+```template
+cd ${{BLANK_1}}
+```
+
+- BLANK_1: CI_PROJECT_DIR (hint: Cloned repo path)
+
+---
+
+## glv-9 | Job-Level Variables
+> Override a variable for a specific job?
+
+Type: fill-blank
+
+```template
+deploy_prod:
+  {{BLANK_1}}:
+    ENVIRONMENT: "production"
+  script: ./deploy.sh
+```
+
+- BLANK_1: variables (hint: Job-scoped variable definition)
+
+---
+
+## glv-10 | Variable Expansion
+> Variables defined in variables section are expanded…
+
+Type: select-option
+
+```template
+GitLab CI variables are expanded {{BLANK_1}} by the runner.
+```
+
+- BLANK_1: at job execution time | at job execution time, at pipeline creation, at commit time, manually

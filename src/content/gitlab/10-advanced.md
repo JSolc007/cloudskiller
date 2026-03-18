@@ -95,3 +95,63 @@ deploy_prod:
 ```
 
 - BLANK_1: resource_group (hint: Mutual exclusion keyword)
+
+---
+
+## gladv-7 | Strategy Depend
+> Wait for a child pipeline to complete?
+
+Type: fill-blank
+
+```template
+trigger:
+  include: child-pipeline.yml
+  {{BLANK_1}}: depend
+```
+
+- BLANK_1: strategy (hint: Wait for downstream result)
+
+---
+
+## gladv-8 | Interruptible
+> Allow a job to be cancelled when a newer pipeline starts?
+
+Type: fill-blank
+
+```template
+build_job:
+  {{BLANK_1}}: true
+  script: npm run build
+```
+
+- BLANK_1: interruptible (hint: Cancel on newer pipeline)
+
+---
+
+## gladv-9 | Retry
+> Retry a job on failure?
+
+Type: fill-blank
+
+```template
+test_job:
+  script: npm test
+  {{BLANK_1}}: 2
+```
+
+- BLANK_1: retry (hint: Number of retry attempts)
+
+---
+
+## gladv-10 | Timeout
+> Set a custom job timeout?
+
+Type: fill-blank
+
+```template
+build_job:
+  script: npm run build
+  {{BLANK_1}}: 2 hours
+```
+
+- BLANK_1: timeout (hint: Maximum job duration)

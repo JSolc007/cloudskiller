@@ -60,10 +60,10 @@ Type: fill-blank
 Type: select-option
 
 ```template
-Artifacts pass data between {{BLANK_1}}, cache speeds up {{BLANK_1}}.
+Artifacts pass data between {{BLANK_1}}, cache speeds up repeated runs.
 ```
 
-- BLANK_1: jobs; repeated runs | jobs; repeated runs, pipelines; stages, branches; tags, repos; forks
+- BLANK_1: jobs in a pipeline | jobs in a pipeline, pipelines, branches, repos
 
 ---
 
@@ -95,3 +95,67 @@ deploy_job:
 ```
 
 - BLANK_1: needs (hint: Job dependency keyword)
+
+---
+
+## gla-7 | Cache Key
+> Use branch name as cache key?
+
+Type: fill-blank
+
+```template
+cache:
+  key: ${{BLANK_1}}
+  paths:
+    - node_modules/
+```
+
+- BLANK_1: CI_COMMIT_REF_SLUG (hint: URL-safe branch name variable)
+
+---
+
+## gla-8 | Untracked Files
+> Include git untracked files in artifacts?
+
+Type: fill-blank
+
+```template
+artifacts:
+  {{BLANK_1}}: true
+  paths:
+    - build/
+```
+
+- BLANK_1: untracked (hint: Include files not in git)
+
+---
+
+## gla-9 | Dependencies
+> Download artifacts from only specific jobs?
+
+Type: fill-blank
+
+```template
+test_job:
+  stage: test
+  {{BLANK_1}}:
+    - build_job
+```
+
+- BLANK_1: dependencies (hint: Limit artifact downloads)
+
+---
+
+## gla-10 | Cache Policy
+> Only upload cache, never download?
+
+Type: fill-blank
+
+```template
+cache:
+  {{BLANK_1}}: push
+  paths:
+    - node_modules/
+```
+
+- BLANK_1: policy (hint: Cache upload/download control)

@@ -74,3 +74,72 @@ Type: fill-blank
 ```
 
 - BLANK_1: depends_on (hint: Meta-argument for explicit deps)
+
+---
+
+## res-6 | Resource Address
+> Full address of a resource in module root?
+
+Type: fill-blank
+
+```template
+# Address: {{BLANK_1}}.web
+```
+
+- BLANK_1: aws_instance (hint: type.name format)
+
+---
+
+## res-7 | Terraform ID
+> Each resource has a unique…
+
+Type: select-option
+
+```template
+Terraform tracks each resource by its {{BLANK_1}} in the state.
+```
+
+- BLANK_1: resource address | resource address, ARN, UUID, hash
+
+---
+
+## res-8 | Local-Only Resources
+> terraform_data is used for…
+
+Type: select-option
+
+```template
+The terraform_data resource stores {{BLANK_1}} without a cloud API.
+```
+
+- BLANK_1: arbitrary values in state | arbitrary values in state, provider configs, module outputs, variable defaults
+
+---
+
+## res-9 | Timeouts
+> Custom timeouts for resource creation?
+
+Type: fill-blank
+
+```template
+resource "aws_db_instance" "main" {
+  timeouts {
+    {{BLANK_1}} = "60m"
+  }
+}
+```
+
+- BLANK_1: create (hint: Timeout for resource creation)
+
+---
+
+## res-10 | Replace
+> Force resource recreation?
+
+Type: fill-blank
+
+```template
+terraform apply -{{BLANK_1}}="aws_instance.web"
+```
+
+- BLANK_1: replace (hint: Force recreate a resource)
