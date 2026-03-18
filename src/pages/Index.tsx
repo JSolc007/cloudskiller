@@ -9,7 +9,7 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch, Container } from "lucide-react";
 
 const Index = () => {
-  const { markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress } = useProgress();
+  const { markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress } = useProgress();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
@@ -30,16 +30,19 @@ const Index = () => {
 
   const totalProgress = useMemo(() => {
     const totalTasks = chapters.reduce((acc, c) => acc + c.tasks.length, 0);
-    const completedTasks = chapters.reduce(
-      (acc, c) => acc + c.tasks.filter((t) => isTaskCompleted(c.id, t.id)).length,
+    const completedScore = chapters.reduce(
+      (acc, c) => acc + c.tasks.reduce((s, t) => {
+        if (!isTaskCompleted(c.id, t.id)) return s;
+        return s + (isTaskHelped(c.id, t.id) ? 0.5 : 1);
+      }, 0),
       0
     );
-    return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
-  }, [isTaskCompleted]);
+    return totalTasks > 0 ? Math.round((completedScore / totalTasks) * 100) : 0;
+  }, [isTaskCompleted, isTaskHelped]);
 
-  const handleTaskComplete = () => {
+  const handleTaskComplete = (helped: boolean) => {
     if (selectedChapter && selectedTask) {
-      markCompleted(selectedChapter.id, selectedTask.id);
+      markCompleted(selectedChapter.id, selectedTask.id, helped);
 
       // Auto-advance to next task
       const currentIndex = selectedChapter.tasks.findIndex((t) => t.id === selectedTask.id);

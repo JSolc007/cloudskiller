@@ -5,7 +5,7 @@ import { Check, X, ArrowRight, Terminal, HelpCircle } from "lucide-react";
 
 interface CodeExerciseProps {
   task: Task;
-  onComplete: () => void;
+  onComplete: (helpUsed: boolean) => void;
   onError: () => void;
 }
 
@@ -47,7 +47,7 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
 
       if (allCorrect) {
         setValidationState("success");
-        setTimeout(onComplete, 800);
+        setTimeout(() => onComplete(helpUsed), 800);
       } else {
         setErrors(newErrors);
         setValidationState("error");
