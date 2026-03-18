@@ -54,7 +54,7 @@ Type: select-option
 SQS FIFO queues guarantee {{BLANK_1}} processing.
 ```
 
-- BLANK_1: exactly-once, ordered | exactly-once, ordered, at-least-once, at-most-once, best-effort
+- BLANK_1: exactly-once ordered | exactly-once ordered, at-least-once, at-most-once, best-effort
 
 ---
 
@@ -81,3 +81,55 @@ A Dead Letter Queue receives messages that {{BLANK_1}}.
 ```
 
 - BLANK_1: failed processing | failed processing, are too large, expire, are duplicated
+
+---
+
+## sls-7 | Lambda Layers
+> Lambda Layers are used to…
+
+Type: select-option
+
+```template
+Lambda Layers allow you to {{BLANK_1}} across multiple functions.
+```
+
+- BLANK_1: share libraries and code | share libraries and code, increase memory, reduce cost, manage VPCs
+
+---
+
+## sls-8 | SQS Visibility Timeout
+> SQS visibility timeout prevents…
+
+Type: select-option
+
+```template
+Visibility timeout prevents other consumers from {{BLANK_1}} a message being processed.
+```
+
+- BLANK_1: receiving | receiving, deleting, reading, encrypting
+
+---
+
+## sls-9 | SNS
+> SNS is a…
+
+Type: select-option
+
+```template
+SNS is a {{BLANK_1}} messaging service.
+```
+
+- BLANK_1: pub/sub | pub/sub, queue-based, streaming, batch
+
+---
+
+## sls-10 | Lambda Concurrency
+> Reserved concurrency guarantees…
+
+Type: select-option
+
+```template
+Reserved concurrency guarantees a function always has {{BLANK_1}} available.
+```
+
+- BLANK_1: dedicated execution capacity | dedicated execution capacity, more memory, lower latency, free invocations

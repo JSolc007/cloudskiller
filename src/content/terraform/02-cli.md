@@ -81,3 +81,55 @@ terraform {{BLANK_1}}
 ```
 
 - BLANK_1: validate (hint: Check config validity)
+
+---
+
+## cli-7 | Output
+> View all outputs after apply?
+
+Type: fill-blank
+
+```template
+terraform {{BLANK_1}}
+```
+
+- BLANK_1: output (hint: Display output values)
+
+---
+
+## cli-8 | Refresh
+> Sync state with real infrastructure?
+
+Type: fill-blank
+
+```template
+terraform apply -{{BLANK_1}}-only
+```
+
+- BLANK_1: refresh (hint: Update state without changes)
+
+---
+
+## cli-9 | Target
+> Apply changes to a specific resource only?
+
+Type: fill-blank
+
+```template
+terraform apply -{{BLANK_1}}=aws_instance.web
+```
+
+- BLANK_1: target (hint: Limit to one resource)
+
+---
+
+## cli-10 | Plan File
+> Save a plan to a file for later apply?
+
+Type: fill-blank
+
+```template
+terraform plan -out={{BLANK_1}}
+```
+
+- BLANK_1: tfplan (hint: Common plan file name)

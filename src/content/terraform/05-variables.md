@@ -116,3 +116,35 @@ export {{BLANK_1}}_region="eu-west-1"
 ```
 
 - BLANK_1: TF_VAR (hint: Prefix for env var overrides)
+
+---
+
+## var-9 | Variable Precedence
+> Which has highest precedence: env var, tfvars, or CLI flag?
+
+Type: select-option
+
+```template
+The {{BLANK_1}} has the highest variable precedence.
+```
+
+- BLANK_1: -var CLI flag | -var CLI flag, environment variable, terraform.tfvars, default value
+
+---
+
+## var-10 | Validation
+> Add custom validation to a variable?
+
+Type: fill-blank
+
+```template
+variable "env" {
+  type = string
+  {{BLANK_1}} {
+    condition     = contains(["dev", "prod"], var.env)
+    error_message = "Must be dev or prod."
+  }
+}
+```
+
+- BLANK_1: validation (hint: Block for custom rules)
