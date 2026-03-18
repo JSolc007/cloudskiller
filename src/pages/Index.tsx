@@ -176,7 +176,7 @@ const Index = () => {
       <ProgressBar value={totalProgress} helped={totalHelped} />
 
       {/* Header */}
-      <header className="px-6 py-4 border-b border-border">
+      <header className="px-6 py-4 border-b border-border bg-muted/50">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
