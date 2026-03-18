@@ -22,7 +22,7 @@ const categoryLabels: Record<string, string> = {
   gitlab: "GitLab CI/CD",
 };
 
-export function ChapterCard({ chapter, progress, isActive, onClick }: ChapterCardProps) {
+export function ChapterCard({ chapter, progress, helped = false, isActive, onClick }: ChapterCardProps) {
   return (
     <motion.button
       onClick={onClick}
