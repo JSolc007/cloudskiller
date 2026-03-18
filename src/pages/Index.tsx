@@ -123,7 +123,7 @@ const Index = () => {
   if (selectedChapter) {
     return (
       <div className="h-screen flex flex-col bg-background">
-        <ProgressBar value={getChapterProgress(selectedChapter.id, selectedChapter.tasks.length)} />
+        <ProgressBar value={getChapterProgress(selectedChapter.id, selectedChapter.tasks.length)} helped={hasChapterHelped(selectedChapter.id)} />
         <div className="flex items-center gap-3 px-6 py-3 border-b border-border">
           <button
             onClick={() => setSelectedChapterId(null)}
