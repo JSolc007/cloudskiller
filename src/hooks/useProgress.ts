@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 
 interface TaskProgress {
   completed: boolean;
+  helped: boolean;
   attempts: number;
 }
 
