@@ -75,11 +75,23 @@ export function useProgress() {
   const getChapterProgress = useCallback(
     (chapterId: string, totalTasks: number) => {
       if (!progress[chapterId]) return 0;
-      const completed = Object.values(progress[chapterId]).filter((t) => t.completed).length;
-      return Math.round((completed / totalTasks) * 100);
+      const score = Object.values(progress[chapterId]).reduce((acc, t) => {
+        if (!t.completed) return acc;
+        return acc + (t.helped ? 0.5 : 1);
+      }, 0);
+      return Math.round((score / totalTasks) * 100);
     },
     [progress]
   );
+
+  const isTaskHelped = useCallback(
+    (chapterId: string, taskId: string) => {
+      return progress[chapterId]?.[taskId]?.helped ?? false;
+    },
+    [progress]
+  );
+
+  return { progress, markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress };
 
   return { progress, markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress };
 }
