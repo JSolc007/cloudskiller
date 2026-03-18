@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Task } from "@/data/types";
-import { Check, X, ArrowRight, Terminal } from "lucide-react";
+import { Check, X, ArrowRight, Terminal, HelpCircle } from "lucide-react";
 
 interface CodeExerciseProps {
   task: Task;
@@ -14,6 +14,9 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
   const [focusedBlank, setFocusedBlank] = useState<string | null>(null);
   const [validationState, setValidationState] = useState<"idle" | "validating" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, boolean>>({});
+  const [helpUsed, setHelpUsed] = useState(false);
+  const [eliminatedOptions, setEliminatedOptions] = useState<Record<string, string[]>>({});
+  const [revealedAnswer, setRevealedAnswer] = useState<Record<string, { hint: string; answer: string } | null>>({});
   const inputRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   useEffect(() => {
@@ -21,6 +24,9 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     setFocusedBlank(null);
     setValidationState("idle");
     setErrors({});
+    setHelpUsed(false);
+    setEliminatedOptions({});
+    setRevealedAnswer({});
   }, [task.id]);
 
   const handleSubmit = useCallback(() => {
@@ -68,6 +74,45 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     setErrors((prev) => ({ ...prev, [blankId]: false }));
   };
 
+  const handleFiftyFifty = () => {
+    if (helpUsed) return;
+    setHelpUsed(true);
+
+    const newEliminated: Record<string, string[]> = {};
+    for (const blank of task.blanks) {
+      if (!blank.options) continue;
+      const wrongOptions = blank.options.filter((o) => o !== blank.answer);
+      // Shuffle and pick 2 to eliminate
+      const shuffled = [...wrongOptions].sort(() => Math.random() - 0.5);
+      newEliminated[blank.id] = shuffled.slice(0, 2);
+    }
+    setEliminatedOptions(newEliminated);
+    // Clear any current selection that was eliminated
+    setAnswers((prev) => {
+      const next = { ...prev };
+      for (const [blankId, eliminated] of Object.entries(newEliminated)) {
+        if (next[blankId] && eliminated.includes(next[blankId])) {
+          delete next[blankId];
+        }
+      }
+      return next;
+    });
+  };
+
+  const handleRevealAnswer = () => {
+    if (helpUsed) return;
+    setHelpUsed(true);
+
+    const revealed: Record<string, { hint: string; answer: string }> = {};
+    for (const blank of task.blanks) {
+      revealed[blank.id] = {
+        hint: blank.hint || "",
+        answer: blank.answer,
+      };
+    }
+    setRevealedAnswer(revealed);
+  };
+
   const renderCode = () => {
     const parts = task.codeTemplate.split(/({{BLANK_\d+}})/g);
 
@@ -79,7 +124,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
         const isError = errors[blankId];
         const isSuccess = validationState === "success";
 
-        // Select-option: show the selected answer inline
         if (task.type === "select-option" && blank?.options) {
           const selected = answers[blankId];
           const displayValue = isSuccess ? blank.answer : selected || "______";
@@ -98,7 +142,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
           );
         }
 
-        // Fill-blank: input field
         const isFocused = focusedBlank === blankId;
         return (
           <span key={i} className="relative inline-block">
@@ -131,7 +174,6 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     });
   };
 
-  // Render option buttons for select-option type
   const renderOptions = () => {
     if (task.type !== "select-option") return null;
 
@@ -139,9 +181,22 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
       <div className="mt-4 space-y-3 w-full">
         {task.blanks.map((blank) => {
           if (!blank.options) return null;
+          const eliminated = eliminatedOptions[blank.id] || [];
           return (
             <div key={blank.id} className="grid grid-cols-2 gap-2 w-full">
               {blank.options.map((option) => {
+                const isEliminated = eliminated.includes(option);
+                if (isEliminated) {
+                  return (
+                    <button
+                      key={option}
+                      disabled
+                      className="w-full px-3 py-3 rounded-lg text-sm font-medium border border-border/30 bg-secondary/20 text-muted-foreground/30 line-through cursor-not-allowed"
+                    >
+                      {option}
+                    </button>
+                  );
+                }
                 const isSelected = answers[blank.id] === option;
                 const isError = errors[blank.id] && isSelected;
                 const isCorrect = validationState === "success" && option === blank.answer;
@@ -169,6 +224,32 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
     );
   };
 
+  const renderRevealedAnswers = () => {
+    if (task.type !== "fill-blank" || Object.keys(revealedAnswer).length === 0) return null;
+
+    return (
+      <div className="mt-3 space-y-2">
+        {task.blanks.map((blank) => {
+          const revealed = revealedAnswer[blank.id];
+          if (!revealed) return null;
+          return (
+            <div key={blank.id} className="px-3 py-2 rounded-lg bg-accent/10 border border-accent/30 text-sm">
+              {revealed.hint && (
+                <p className="text-muted-foreground">
+                  <span className="font-medium text-accent">Hint:</span> {revealed.hint}
+                </p>
+              )}
+              <p className="text-foreground mt-1">
+                <span className="font-medium text-accent">Answer:</span>{" "}
+                <code className="font-mono bg-accent/10 px-1.5 py-0.5 rounded">{revealed.answer}</code>
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   // Auto-submit for select-option when all blanks filled
   useEffect(() => {
     if (task.type === "select-option" && validationState === "idle") {
@@ -183,9 +264,28 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
   return (
     <div className="flex flex-col h-full">
       {/* Task instruction */}
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold text-foreground">{task.title}</h2>
-        <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
+      <div className="mb-4 flex items-start justify-between gap-2">
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">{task.title}</h2>
+          <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
+        </div>
+
+        {/* Help button */}
+        {!helpUsed && validationState !== "success" && (
+          <button
+            onClick={task.type === "select-option" ? handleFiftyFifty : handleRevealAnswer}
+            className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-accent/40 bg-accent/10 text-accent hover:bg-accent/20 transition-iq"
+          >
+            <HelpCircle className="w-3.5 h-3.5" />
+            {task.type === "select-option" ? "50:50" : "Hint"}
+          </button>
+        )}
+        {helpUsed && validationState !== "success" && (
+          <span className="flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border border-muted/40 bg-muted/30 text-muted-foreground">
+            <HelpCircle className="w-3.5 h-3.5" />
+            Used
+          </span>
+        )}
       </div>
 
       {/* Code block */}
@@ -195,6 +295,9 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
 
       {/* Options for select-option */}
       {renderOptions()}
+
+      {/* Revealed answers for fill-blank */}
+      {renderRevealedAnswers()}
 
       {/* Bottom bar */}
       <div className="mt-auto pt-4 flex items-center justify-between">
