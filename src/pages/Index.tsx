@@ -40,6 +40,10 @@ const Index = () => {
     return totalTasks > 0 ? Math.round((completedScore / totalTasks) * 100) : 0;
   }, [isTaskCompleted, isTaskHelped]);
 
+  const totalHelped = useMemo(() => {
+    return chapters.some((c) => hasChapterHelped(c.id));
+  }, [hasChapterHelped]);
+
   const handleTaskComplete = (helped: boolean) => {
     if (selectedChapter && selectedTask) {
       markCompleted(selectedChapter.id, selectedTask.id, helped);
