@@ -71,3 +71,70 @@ include:
 ```
 
 - BLANK_1: Dependency-Scanning (hint: Template for dep scanning)
+
+---
+
+## gls-6 | Secret Detection
+> Detect leaked credentials in code?
+
+Type: fill-blank
+
+```template
+include:
+  - template: Security/{{BLANK_1}}.gitlab-ci.yml
+```
+
+- BLANK_1: Secret-Detection (hint: Template for finding secrets)
+
+---
+
+## gls-7 | License Compliance
+> Scan for license compatibility issues?
+
+Type: fill-blank
+
+```template
+include:
+  - template: Security/{{BLANK_1}}.gitlab-ci.yml
+```
+
+- BLANK_1: License-Scanning (hint: Template for license checks)
+
+---
+
+## gls-8 | Security Dashboard
+> Where do scan results appear?
+
+Type: select-option
+
+```template
+Security scan results appear in the {{BLANK_1}}.
+```
+
+- BLANK_1: Security Dashboard | Security Dashboard, CI logs, deploy stage, merge request only
+
+---
+
+## gls-9 | Vulnerability Report
+> The merge request shows…
+
+Type: select-option
+
+```template
+The merge request widget shows {{BLANK_1}} from security scans.
+```
+
+- BLANK_1: new vulnerabilities | new vulnerabilities, all code changes, deployment status, test coverage
+
+---
+
+## gls-10 | SAST Analyzers
+> SAST uses language-specific…
+
+Type: select-option
+
+```template
+SAST uses {{BLANK_1}} to detect vulnerabilities in different languages.
+```
+
+- BLANK_1: analyzers | analyzers, compilers, linters, formatters
