@@ -178,9 +178,12 @@ const Index = () => {
       {/* Header */}
       <header className="px-6 py-4 border-b border-border">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Cloud className="w-5 h-5 text-primary" />
-            <h1 className="text-lg font-semibold text-foreground">Cloud Skiller</h1>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-2">
+              <Cloud className="w-5 h-5 text-primary" />
+              <h1 className="text-lg font-semibold text-foreground">Toilet Cloud DevOps Infra as Code Skiller</h1>
+            </div>
+            <p className="text-xs text-muted-foreground ml-7">Learn new skills faster than you pee...</p>
           </div>
           <div className="flex items-center gap-1 text-xs text-muted-foreground">
             <Code2 className="w-3.5 h-3.5" />
