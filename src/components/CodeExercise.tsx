@@ -5,7 +5,7 @@ import { Check, X, ArrowRight, Terminal, HelpCircle } from "lucide-react";
 
 interface CodeExerciseProps {
   task: Task;
-  onComplete: () => void;
+  onComplete: (helpUsed: boolean) => void;
   onError: () => void;
 }
 
