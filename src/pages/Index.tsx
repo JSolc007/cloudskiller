@@ -86,7 +86,7 @@ const Index = () => {
     return (
       <div className="h-screen flex flex-col bg-background">
         {/* Top bar */}
-        <ProgressBar value={chapterTaskProgress} />
+        <ProgressBar value={chapterTaskProgress} helped={hasChapterHelped(selectedChapter.id)} />
         <div className="flex items-center gap-3 px-6 py-3 border-b border-border">
           <button
             onClick={() => setSelectedTaskId(null)}
