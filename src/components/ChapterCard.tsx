@@ -32,7 +32,7 @@ export function ChapterCard({ chapter, progress, isActive, onClick }: ChapterCar
       whileTap={{ scale: 0.99 }}
     >
       <div className="flex items-start gap-3">
-        <span className="text-2xl">{chapter.icon}</span>
+        <span className="text-2xl w-8 shrink-0 text-center">{chapter.icon}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <h3 className="font-semibold text-sm text-foreground truncate">{chapter.title}</h3>
