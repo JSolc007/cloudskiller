@@ -92,6 +92,13 @@ export function useProgress() {
     [progress]
   );
 
-  return { progress, markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress };
+  const hasChapterHelped = useCallback(
+    (chapterId: string) => {
+      if (!progress[chapterId]) return false;
+      return Object.values(progress[chapterId]).some((t) => t.helped);
+    },
+    [progress]
+  );
 
+  return { progress, markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, hasChapterHelped, getChapterProgress };
 }
