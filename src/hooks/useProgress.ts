@@ -30,7 +30,7 @@ function saveProgress(state: ProgressState) {
 export function useProgress() {
   const [progress, setProgress] = useState<ProgressState>(loadProgress);
 
-  const markCompleted = useCallback((chapterId: string, taskId: string) => {
+  const markCompleted = useCallback((chapterId: string, taskId: string, helped: boolean = false) => {
     setProgress((prev) => {
       const next = {
         ...prev,
@@ -38,6 +38,7 @@ export function useProgress() {
           ...prev[chapterId],
           [taskId]: {
             completed: true,
+            helped,
             attempts: (prev[chapterId]?.[taskId]?.attempts ?? 0) + 1,
           },
         },
