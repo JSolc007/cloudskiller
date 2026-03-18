@@ -197,7 +197,7 @@ const Index = () => {
         <div className="max-w-4xl mx-auto px-6 py-8">
           {/* Welcome message */}
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-foreground">Test your skills...</h2>
+            <h2 className="text-2xl font-semibold text-foreground">Upskill your knowledge</h2>
             <p className="text-sm text-muted-foreground mt-1">
               Master cloud infrastructure through hands-on syntax exercises.
             </p>
