@@ -9,7 +9,7 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { ChevronLeft, BookOpen, Code2, Cloud, GitBranch, Container } from "lucide-react";
 
 const Index = () => {
-  const { markCompleted, incrementAttempt, isTaskCompleted, getChapterProgress } = useProgress();
+  const { markCompleted, incrementAttempt, isTaskCompleted, isTaskHelped, getChapterProgress } = useProgress();
   const [selectedChapterId, setSelectedChapterId] = useState<string | null>(null);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const [filterCategory, setFilterCategory] = useState<string | null>(null);
