@@ -37,9 +37,9 @@ const Index = () => {
     return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   }, [isTaskCompleted]);
 
-  const handleTaskComplete = () => {
+  const handleTaskComplete = (helped: boolean) => {
     if (selectedChapter && selectedTask) {
-      markCompleted(selectedChapter.id, selectedTask.id);
+      markCompleted(selectedChapter.id, selectedTask.id, helped);
 
       // Auto-advance to next task
       const currentIndex = selectedChapter.tasks.findIndex((t) => t.id === selectedTask.id);

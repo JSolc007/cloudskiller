@@ -47,7 +47,7 @@ export function CodeExercise({ task, onComplete, onError }: CodeExerciseProps) {
 
       if (allCorrect) {
         setValidationState("success");
-        setTimeout(onComplete, 800);
+        setTimeout(() => onComplete(helpUsed), 800);
       } else {
         setErrors(newErrors);
         setValidationState("error");
